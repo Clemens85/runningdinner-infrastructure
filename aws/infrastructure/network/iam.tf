@@ -78,6 +78,11 @@ resource "aws_iam_role_policy_attachment" "ec2-ecs-role-attachment" {
   role = aws_iam_role.app-instance-role.name
 }
 
+resource "aws_iam_role_policy_attachment" "ecs-image-pull-policy-attachment" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  role = aws_iam_role.app-instance-role.name
+}
+
 resource "aws_iam_user" "ci_user" {
   name = "ci_user"
 }
