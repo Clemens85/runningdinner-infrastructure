@@ -45,13 +45,15 @@ resource "aws_db_instance" "runningdinner-db" {
   vpc_security_group_ids = [data.aws_security_group.runningdinner-db-app.id]
   skip_final_snapshot    = true
   tags = local.common_tags
+  db_name = "runningdinner"
+  delete_automated_backups = true
 }
 
 resource "aws_ssm_parameter" "runningdinner-db-url" {
   type = "String"
   name = "/runningdinner/database/url"
   tags = local.common_tags
-  value = aws_db_instance.runningdinner-db.address
+  value = "jdbc:postgresql://${aws_db_instance.runningdinner-db.address}:5432/runningdinner"
 }
 
 
