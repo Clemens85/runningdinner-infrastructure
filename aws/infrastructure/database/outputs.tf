@@ -3,5 +3,5 @@ output "rds-address" {
 }
 
 output "rds-name" {
-  value = aws_db_instance.runningdinner-db.name
+  value = aws_db_instance.runningdinner-db.db_name
 }
