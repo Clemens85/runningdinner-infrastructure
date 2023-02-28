@@ -1,12 +1,12 @@
 [
   {
     "name": "runningdinner-backend",
-    "image": "nginx:latest",
+    "image": "clemensstich/runningdinner:${IMAGE_TAG_VERSION}",
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
         "awslogs-group": "runningdinner-backend",
-        "awslogs-region": "eu-central-1",
+        "awslogs-region": "${AWS_REGION}",
         "awslogs-stream-prefix": "ecs"
       }
     },
@@ -21,8 +21,52 @@
     "essential": true,
     "entryPoint": [],
     "command": [],
-    "environment": [],
-    "mountPoints": [],
+    "environment": [
+      {
+        "name": "SENDGRID.API.KEY_TODO",
+        "value": "TODO"
+      }
+    ],
+    "secrets": [
+      {
+        "name": "SPRING_DATASOURCE_URL",
+        "valueFrom": "${SPRING_DATASOURCE_URL_SSM_ARN}"
+      },
+      {
+        "name": "SPRING_DATASOURCE_USERNAME",
+        "valueFrom": "${SPRING_DATASOURCE_USERNAME_SSM_ARN}"
+      },
+      {
+        "name": "SPRING_DATASOURCE_PASSWORD",
+        "valueFrom": "${SPRING_DATASOURCE_PASSWORD_SSM_ARN}"
+      },
+      {
+        "name": "SPRING_FLYWAY_USER",
+        "valueFrom": "${SPRING_FLYWAY_USER_SSM_ARN}"
+      },
+      {
+        "name": "SPRING_FLYWAY_PASSWORD",
+        "valueFrom": "${SPRING_FLYWAY_PASSWORD_SSM_ARN}"
+      },
+      {
+        "name": "AWS_SQS_GEOCODE_URL",
+        "valueFrom": "${AWS_SQS_GEOCODE_URL_SSM_ARN}"
+      }
+    ],
+    "volumes": [
+      {
+        "name": "app-logs",
+        "host": {
+          "sourcePath": "/logs"
+        }
+      }
+    ],
+    "mountPoints": [
+      {
+        "containerPath": "/logs",
+        "sourceVolume": "app-logs"
+      }
+    ],
     "volumesFrom": []
   }
 ]
