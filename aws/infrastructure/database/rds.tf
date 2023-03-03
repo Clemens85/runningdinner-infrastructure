@@ -56,6 +56,25 @@ resource "aws_ssm_parameter" "runningdinner-db-url" {
   value = "jdbc:postgresql://${aws_db_instance.runningdinner-db.address}:5432/runningdinner"
 }
 
+# Those will be later used in App, but they need to be persistent and not changed when App is destroyed and newly created:
+resource "random_password" "database-password-app" {
+  length           = 16
+  special          = false
+}
+
+resource "aws_ssm_parameter" "database-password-app" {
+  type = "SecureString"
+  name = "/runningdinner/database/password/app"
+  tags = local.common_tags
+  value = random_password.database-password-app.result
+}
+
+resource "aws_ssm_parameter" "database-username-app" {
+  type = "SecureString"
+  name = "/runningdinner/database/username/app"
+  tags = local.common_tags
+  value = "runningdinner"
+}
 
 #data "aws_subnets" "runningdinner-app-subnets" {
 #  filter {

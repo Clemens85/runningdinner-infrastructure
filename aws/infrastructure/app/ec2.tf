@@ -39,6 +39,10 @@ data "aws_ami" "ecs" {
   ]
 }
 
+data "aws_ssm_parameter" "dockerhub-credentials" {
+  name = "/runningdinner/dockerhub/credentials"
+}
+
 resource "aws_key_pair" "runningdinner-sshkey" {
   key_name = "runningdinner-sshkey"
   public_key = file("../../files/id_rsa.pub")
@@ -62,9 +66,10 @@ resource "aws_instance" "runningdinner-appserver" {
 #!/bin/bash
 echo "ECS_CLUSTER=${aws_ecs_cluster.runningdinner.name}" >> /etc/ecs/ecs.config
 echo "ECS_ENGINE_AUTH_TYPE=docker" >> /etc/ecs/ecs.config
-echo "ECS_ENGINE_AUTH_DATA={\"https://index.docker.io/v1/\":{\"username\":\"TODO\",\"password\":\"TODO\",\"email\":\"TODO\"}}" >> /etc/ecs/ecs.config
-sudo systemctl stop ecs
-sudo systemctl start ecs
+DOCKERHUB_CREDS='${data.aws_ssm_parameter.dockerhub-credentials.value}'
+echo "ECS_ENGINE_AUTH_DATA=$DOCKERHUB_CREDS" >> /etc/ecs/ecs.config
+# systemctl stop ecs
+# systemctl start ecs
 EOF
 
   lifecycle {
@@ -85,8 +90,14 @@ resource "aws_eip" "runningdinner-appserver-ip" {
   tags = local.common_tags
 }
 
-#resource "null_resource" "runningdinner-appserver-ip-log" {
-#  provisioner "local-exec" {
-#    command = "echo ${aws_eip.runningdinner-appserver-ip.address} > .appserver-ip"
-#  }
-#}
+resource "null_resource" "runningdinner-appserver-ip-log" {
+  triggers = {
+    value = aws_eip.runningdinner-appserver-ip.public_ip
+  }
+  depends_on = [aws_eip.runningdinner-appserver-ip]
+  provisioner "local-exec" {
+    command = <<EOF
+      echo ${aws_eip.runningdinner-appserver-ip.public_ip} > .appserver-ip.txt
+    EOF
+  }
+}

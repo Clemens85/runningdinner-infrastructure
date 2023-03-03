@@ -1,17 +1,12 @@
 #! /bin/bash
 
-CUR_DIR_TF=$(pwd)
+CUR_DIR=$(pwd)
 
 cd "$( dirname "${BASH_SOURCE[0]}" )" || exit 1
 
-STAGE=$1
+read -r DNS < ../infrastructure/app/.appserver-ip.txt
+echo "Using $DNS"
 
-../infrastructure/tf.sh $STAGE app init
-cd "$( dirname "${BASH_SOURCE[0]}" )" || exit 1
+cd $CUR_DIR
 
-cd ../infrastructure/app
-dns=$(terraform output ec2-public-dns)
-dns=$(echo "${dns//\"}")
-
-echo "Connecting to $dns"
-ssh ec2-user@$dns
+ssh ec2-user@"$DNS"

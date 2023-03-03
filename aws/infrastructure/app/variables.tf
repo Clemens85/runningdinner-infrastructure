@@ -1,6 +1,6 @@
 variable "instance_type" {
   type = string
-  default = "t3.nano"
+  default = "t3.micro"
 }
 
 variable "region" {

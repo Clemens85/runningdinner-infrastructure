@@ -22,43 +22,31 @@
     "entryPoint": [],
     "command": [],
     "environment": [
-      {
-        "name": "SENDGRID.API.KEY_TODO",
-        "value": "TODO"
-      }
     ],
     "secrets": [
       {
         "name": "SPRING_DATASOURCE_URL",
-        "valueFrom": "${SPRING_DATASOURCE_URL_SSM_ARN}"
+        "valueFrom": "/runningdinner/database/url"
       },
       {
         "name": "SPRING_DATASOURCE_USERNAME",
-        "valueFrom": "${SPRING_DATASOURCE_USERNAME_SSM_ARN}"
+        "valueFrom": "/runningdinner/database/username/app"
       },
       {
         "name": "SPRING_DATASOURCE_PASSWORD",
-        "valueFrom": "${SPRING_DATASOURCE_PASSWORD_SSM_ARN}"
+        "valueFrom": "/runningdinner/database/password/app"
       },
       {
         "name": "SPRING_FLYWAY_USER",
-        "valueFrom": "${SPRING_FLYWAY_USER_SSM_ARN}"
+        "valueFrom": "/runningdinner/database/username/admin"
       },
       {
         "name": "SPRING_FLYWAY_PASSWORD",
-        "valueFrom": "${SPRING_FLYWAY_PASSWORD_SSM_ARN}"
+        "valueFrom": "/runningdinner/database/password/admin"
       },
       {
         "name": "AWS_SQS_GEOCODE_URL",
-        "valueFrom": "${AWS_SQS_GEOCODE_URL_SSM_ARN}"
-      }
-    ],
-    "volumes": [
-      {
-        "name": "app-logs",
-        "host": {
-          "sourcePath": "/logs"
-        }
+        "valueFrom": "/runningdinner/geocode-participant/sqs/arn"
       }
     ],
     "mountPoints": [
@@ -67,6 +55,12 @@
         "sourceVolume": "app-logs"
       }
     ],
-    "volumesFrom": []
+    "memoryReservation": 300,
+    "volumesFrom": [],
+    "healthCheck": {
+      "command": [ "CMD-SHELL", "wget -q http://localhost/health || exit 1" ],
+      "startPeriod": 60,
+      "interval": 60
+    }
   }
 ]
