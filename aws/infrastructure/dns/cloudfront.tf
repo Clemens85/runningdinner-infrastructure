@@ -3,6 +3,10 @@ data "aws_instance" "runningdinner-app-instance" {
     name   = "tag:Name"
     values = [var.app_instance_name]
   }
+  filter {
+    name = "instance-state-name"
+    values = ["running"]
+  }
 }
 
 resource "aws_cloudfront_distribution" "runningdinner" {
@@ -16,10 +20,28 @@ resource "aws_cloudfront_distribution" "runningdinner" {
     forwarded_values {
       query_string = true
       cookies {
-        forward = "none"
+        forward = "all"
       }
     }
   }
+
+  ordered_cache_behavior {
+    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods         = ["HEAD", "GET"]
+    path_pattern           = "/rest"
+    target_origin_id       = "runningdinner-app"
+    viewer_protocol_policy = "allow-all"
+    forwarded_values {
+      query_string = true
+      cookies {
+        forward = "all"
+      }
+    }
+    max_ttl = 120
+    min_ttl = 0
+    default_ttl = 0
+  }
+
   origin {
     domain_name = data.aws_instance.runningdinner-app-instance.public_dns
     origin_id   = "runningdinner-app"

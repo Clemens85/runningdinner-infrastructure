@@ -16,3 +16,4 @@ switch-dns-to-new-server.json
 .tfcontext
 local/volume/
 local/.env
+.appserver-ip.txt
