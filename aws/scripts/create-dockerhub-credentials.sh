@@ -12,6 +12,7 @@ fi
 
 USERNAME="$2"
 PASSWORD="$3"
+EMAIL="$4"
 
 configDir="../config"
 awsAccountId=$(grep aws_account_id "${configDir}/stages/${passedStage}/default.tfvars" | awk -F= '{print $2}' | tr -d '"' | xargs)
@@ -26,7 +27,10 @@ $(aws sts assume-role \
 --profile runningdinner-$passedStage \
 --output text))
 
-aws ssm put-parameter --name "/runningdinner/dockerhub/credentials" --type "SecureString" --value "{\"username\":\"$USERNAME\",\"password\":\"$PASSWORD\"}"
+aws ssm put-parameter --name "/runningdinner/dockerhub/credentials" \
+                      --type "SecureString" \
+                      --value "{\"https://index.docker.io/v1/\":{\"username\":\"$USERNAME\",\"password\":\"$PASSWORD\",\"email\":\"$EMAIL\"}}" \
+                      --overwrite
 
 unset AWS_ACCESS_KEY_ID
 unset AWS_SECRET_ACCESS_KEY
