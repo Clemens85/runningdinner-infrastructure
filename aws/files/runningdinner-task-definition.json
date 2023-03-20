@@ -22,6 +22,10 @@
     "entryPoint": [],
     "command": [],
     "environment": [
+      {
+        "name": "LOGGING_PATH",
+        "value": "/logs"
+      }
     ],
     "secrets": [
       {
@@ -58,7 +62,7 @@
     "memoryReservation": 300,
     "volumesFrom": [],
     "healthCheck": {
-      "command": [ "CMD-SHELL", "wget -q http://localhost/health || exit 1" ],
+      "command": [ "CMD-SHELL", "wget -qO- http://localhost/health || exit 1" ],
       "startPeriod": 60,
       "interval": 60
     }

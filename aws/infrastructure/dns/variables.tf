@@ -13,3 +13,6 @@ variable "stage" {
 
 variable "app_instance_name" {
 }
+
+variable "webapp_bucket_name" {
+}

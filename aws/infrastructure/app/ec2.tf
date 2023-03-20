@@ -53,6 +53,21 @@ resource "aws_iam_instance_profile" "app-instance-role-profile" {
   role = data.aws_iam_role.app-instance-role.name
 }
 
+data "aws_ssm_parameter" "logzio-token" {
+  name = "/runningdinner/logzio/token"
+}
+
+data "template_file" "filebeat" {
+  template = file("${path.module}/../../files/filebeat.yml")
+  vars = {
+    LOGZ_IO_TOKEN = data.aws_ssm_parameter.logzio-token.value
+  }
+}
+
+data "local_file" "filebeat-yum-repo" {
+  filename = "${path.module}/../../files/elastic.repo"
+}
+
 resource "aws_instance" "runningdinner-appserver" {
   ami = data.aws_ami.ecs.id
   instance_type = var.instance_type
@@ -64,12 +79,23 @@ resource "aws_instance" "runningdinner-appserver" {
 
   user_data = <<EOF
 #!/bin/bash
+# *** ECS Config *** #
 echo "ECS_CLUSTER=${aws_ecs_cluster.runningdinner.name}" >> /etc/ecs/ecs.config
 echo "ECS_ENGINE_AUTH_TYPE=docker" >> /etc/ecs/ecs.config
 DOCKERHUB_CREDS='${data.aws_ssm_parameter.dockerhub-credentials.value}'
 echo "ECS_ENGINE_AUTH_DATA=$DOCKERHUB_CREDS" >> /etc/ecs/ecs.config
-# systemctl stop ecs
-# systemctl start ecs
+
+sudo yum -y install nano
+
+# *** Logz.io Config ***
+sudo curl https://raw.githubusercontent.com/logzio/public-certificates/master/AAACertificateServices.crt --create-dirs -o /etc/pki/tls/certs/COMODORSADomainValidationSecureServerCA.crt
+sudo rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
+sudo echo '${data.local_file.filebeat-yum-repo.content}' > /etc/yum.repos.d/elastic.repo
+sudo yum -y install filebeat
+sudo systemctl enable filebeat
+sudo echo '${data.template_file.filebeat.rendered}' > /etc/filebeat/filebeat.yml
+sudo systemctl start filebeat
+
 EOF
 
   lifecycle {

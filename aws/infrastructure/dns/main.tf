@@ -12,3 +12,11 @@ terraform {
     key = "services/dns_v2.tfstate"
   }
 }
+
+# See https://github.com/hashicorp/terraform/issues/2283
+locals {
+  common_tags = tomap({
+    "service" = "runningdinner-v2"
+    "component" = "app"
+  })
+}
