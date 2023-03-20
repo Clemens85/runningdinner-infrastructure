@@ -104,9 +104,12 @@ resource "aws_cloudfront_distribution" "runningdinner" {
     }
   }
   viewer_certificate {
-    cloudfront_default_certificate = true
-    # acm_certificate_arn = aws_acm_certificate.runningdinner.arn
+    cloudfront_default_certificate = false
+    acm_certificate_arn = aws_acm_certificate.runningdinner.arn
+    ssl_support_method = "sni-only"
   }
+
+  aliases = ["dev.runyourdinner.eu"]
 }
 
 # *** Bucket and Permissions for Cloudfront logs
