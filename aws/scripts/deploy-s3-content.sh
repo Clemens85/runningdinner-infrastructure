@@ -10,7 +10,7 @@ cd "$( dirname "${BASH_SOURCE[0]}" )" || exit 1
 source setup-aws-cli.sh
 
 BUCKET_NAME=$2
-if [[ -z "$passedStage" ]]; then
+if [[ -z "$BUCKET_NAME" ]]; then
   echo "Error: Must pass the bucket name for which to sync the webapp files as second param"
   exit 1
 fi

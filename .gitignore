@@ -17,3 +17,5 @@ switch-dns-to-new-server.json
 local/volume/
 local/.env
 .appserver-ip.txt
+.db-address.txt
+backup.dump

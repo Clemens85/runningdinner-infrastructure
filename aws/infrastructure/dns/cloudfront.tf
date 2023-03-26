@@ -109,7 +109,7 @@ resource "aws_cloudfront_distribution" "runningdinner" {
     ssl_support_method = "sni-only"
   }
 
-  aliases = ["dev.runyourdinner.eu"]
+  aliases = [var.domain_name]
 }
 
 # *** Bucket and Permissions for Cloudfront logs

@@ -76,6 +76,20 @@ resource "aws_ssm_parameter" "database-username-app" {
   value = "runningdinner"
 }
 
+
+resource "null_resource" "runningdinner-database-address-log" {
+  triggers = {
+    value = aws_db_instance.runningdinner-db.address
+  }
+  depends_on = [aws_db_instance.runningdinner-db]
+  provisioner "local-exec" {
+    command = <<EOF
+      echo ${aws_db_instance.runningdinner-db.address} > .db-address.txt
+    EOF
+  }
+}
+
+
 #data "aws_subnets" "runningdinner-app-subnets" {
 #  filter {
 #    name   = "vpc-id"

@@ -9,16 +9,64 @@
 
 For each stage:
 
-IAM user in root account with role-assume policy for child account.
-Example policy: 
+IAM user (e.g. `runningdinner-dev`) in root account with role-assume policy for child account.
+Example policy (inline): 
 
-```d ```
-
-Child account must have role with Admin-Access policy that is allowed to be assumed by IAM user in root account.
-Example policy:
-```json 
-TODO
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "sts:AssumeRole",
+            "Resource": "arn:aws:iam::CHILD_ACCOUNT_ID:role/terraform-dev"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*"
+            ],
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:PutItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:UpdateItem"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
 ```
+---
+
+Child account must have a role named `terraform-dev` that is allowed to be assumed by IAM user in root account.
+Example policy of trust relationship:
+```json 
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": [
+                    "arn:aws:iam::CHILD_ACCOUNT_ID:user/runningdinner-dev",
+                    "arn:aws:iam::CHILD_ACCOUNT_ID:root"
+                ]
+            },
+            "Action": "sts:AssumeRole",
+            "Condition": {}
+        }
+    ]
+}
+```
+
+This role must further also have the appropriate access policies assigned, e.g. `AdministratorAccess`. 
 
 See also https://medium.com/@aw.panda.aws/4-steps-to-deploy-to-multiple-aws-accounts-with-terraform-bbb00bb4e789
 

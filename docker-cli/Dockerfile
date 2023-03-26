@@ -1,10 +1,22 @@
-FROM ubuntu:latest
+FROM ubuntu:focal
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+RUN apt-get -y update
+
+RUN apt-get -y install wget ca-certificates
+RUN apt-get -y install gnupg
+RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main" >>  /etc/apt/sources.list.d/pgdg.list
+# RUN sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+
 RUN apt-get -y update && apt-get -y upgrade
-RUN apt-get -y install curl unzip ssh apt-transport-https gnupg software-properties-common jq sudo groff less
+
+RUN apt-get -y install curl unzip ssh apt-transport-https gnupg software-properties-common jq sudo groff
+RUN apt-get -y install less
 RUN apt-get -y install gcc python3 python3-pip rsync
+
+RUN apt-get -y install postgresql-client
 
 RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
 RUN apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
