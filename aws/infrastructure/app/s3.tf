@@ -27,6 +27,7 @@ resource "aws_s3_bucket_website_configuration" "webapp" {
 resource "aws_s3_bucket_acl" "webapp" {
   bucket = aws_s3_bucket.webapp.id
   acl = "private"
+  depends_on = [ aws_s3_bucket_public_access_block.webapp ]
 }
 
 resource "aws_s3_bucket_public_access_block" "webapp" {
@@ -36,12 +37,3 @@ resource "aws_s3_bucket_public_access_block" "webapp" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
-
-#resource "null_resource" "deploy-files" {
-#  depends_on = [ aws_s3_bucket.webapp ]
-#  provisioner "local-exec" {
-#    command = <<EOF
-#      ${path.module}/../../scripts/deploy-s3-content.sh "${var.stage}" "${local.webapp-s3bucket-name}"
-#    EOF
-#  }
-#}
