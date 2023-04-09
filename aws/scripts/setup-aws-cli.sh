@@ -6,7 +6,9 @@ if [[ -z "$passedStage" ]]; then
   exit 1
 fi
 
-configDir="../config"
+SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+configDir="$SCRIPT_DIR/../config"
+
 awsAccountId=$(grep aws_account_id "${configDir}/stages/${passedStage}/default.tfvars" | awk -F= '{print $2}' | tr -d '"' | xargs)
 
 echo "Using aws account $awsAccountId"
