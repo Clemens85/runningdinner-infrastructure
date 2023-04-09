@@ -42,7 +42,7 @@ cd "$TF_CONFIG_DIR" || exit 1
 
 TF_COMMAND=$3
 
-subCommandsWithVars=(apply destroy plan)
+subCommandsWithVars=(apply destroy plan import)
 subCommandsWithBackend=(init)
 subCommandsWithoutVars=(output)
 
@@ -60,7 +60,7 @@ elif [[ " ${subCommandsWithoutVars[@]} " =~ ${TF_COMMAND} ]]; then
   terraform "$TF_COMMAND" "${@:4}"
 elif [[ " ${subCommandsWithBackend[@]} " =~ ${TF_COMMAND} ]]; then
   # shellcheck disable=SC2145
-  echo "Running in $(pwd): terraform init ${@:4} with remote backend in $TF_BACKEND_BUCKET for stage $STAGE"
+  echo "Running in $(pwd): terraform init ${@:4} with remote backend in $TF_BACKEND_BUCKET for stage $STAGE with role $TF_VAR_assume_role_arn"
   terraform init \
            -reconfigure \
            -backend-config="bucket=$TF_BACKEND_BUCKET" \
