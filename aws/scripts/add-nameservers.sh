@@ -2,6 +2,8 @@
 
 set +e
 
+# Reference https://theburningmonk.com/2021/05/how-to-manage-route53-hosted-zones-in-a-multi-account-environment/ for more information
+
 CUR_DIR_TF=$(pwd)
 cd "$( dirname "${BASH_SOURCE[0]}" )" || exit 1
 
@@ -16,18 +18,6 @@ if [[ $currentExecutionStage == "prod" ]]; then
 fi
 
 HOSTED_ZONE_ID="ZX9JVHNHZRJLS" # This was already manually created in past
-
-# Iterate through remaining args (starting only with third command arg, first two args are stage which to assume and the stage we are currently executing):
-# NAMESERVERS='['
-# # Example: NAMESERVERS='["ns1.example.com.", "ns2.example.com.", "ns3.example.com."]'
-# shift 2
-# for NS in "$@"
-# do
-#   NAMESERVERS="$NAMESERVERS'$NS.',"
-# done
-# NAMESERVERS="${NAMESERVERS/%,/''}"
-# NAMESERVERS="$NAMESERVERS]"
-
 
 # Iterate through remaining args (starting only with third command arg, first two args are stage which to assume and the stage we are currently executing):
 # Example result: NAMESERVERS={ "Value": "ns1.example.com." }, { "Value": "ns2.example.com." }, { "Value": "ns3.example.com." }
@@ -45,7 +35,7 @@ if [[ $NAMESERVERS == "" ]]; then
 fi
 
 echo "Got $NAMESERVERS"
-RECORD_NAME="$currentExecutionStage.runyourdinner.eu"
+RECORD_NAME="$currentExecutionStage.runyourdinner.eu."
 RECORD_TYPE="NS"
 
 # Check if the record already exists in the hosted zone
