@@ -15,23 +15,51 @@ data "aws_s3_bucket" "webapp" {
   bucket = var.webapp_bucket_name
 }
 
+#data "aws_iam_policy_document" "webapp" {
+#  statement {
+#    actions   = ["s3:*"]
+#    resources = [data.aws_s3_bucket.webapp.arn]
+#    principals {
+#      type        = "AWS"
+#      identifiers = [aws_cloudfront_origin_access_identity.webapp-cloudfront-access.iam_arn]
+#    }
+#  }
+#}
+
 data "aws_iam_policy_document" "webapp" {
   statement {
-    actions   = ["s3:*"]
-    resources = [data.aws_s3_bucket.webapp.arn]
+    sid = "AllowCloudFrontAccessToBucket"
+
+    actions = ["s3:*"]
+    resources = ["${data.aws_s3_bucket.webapp.arn}"]
+
     principals {
-      type        = "AWS"
-      identifiers = [aws_cloudfront_origin_access_identity.webapp-cloudfront-access.iam_arn]
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.runningdinner.arn]
     }
   }
 }
+
 resource "aws_s3_bucket_policy" "webapp" {
   bucket = data.aws_s3_bucket.webapp.id
   policy = data.aws_iam_policy_document.webapp.json
 }
 
-resource "aws_cloudfront_origin_access_identity" "webapp-cloudfront-access" {
-  comment = "Allows access of webapp bucket from Cloudfront"
+#resource "aws_cloudfront_origin_access_identity" "webapp-cloudfront-access" {
+#  comment = "Allows access of webapp bucket from Cloudfront"
+#}
+
+resource "aws_cloudfront_origin_access_control" "webapp" {
+  name                              = "oac-access-s3-web-bucket"
+  description                       = ""
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }
 
 resource "aws_cloudfront_distribution" "runningdinner" {
@@ -60,6 +88,10 @@ resource "aws_cloudfront_distribution" "runningdinner" {
       }
       headers = []
     }
+#    function_association {
+#      event_type   = "viewer-request"
+#      function_arn = aws_cloudfront_function.runningdinner.arn
+#    }
   }
 
   ordered_cache_behavior {
@@ -92,10 +124,8 @@ resource "aws_cloudfront_distribution" "runningdinner" {
 
   origin {
     domain_name = data.aws_s3_bucket.webapp.bucket_regional_domain_name
-    origin_id   = aws_cloudfront_origin_access_identity.webapp-cloudfront-access.cloudfront_access_identity_path
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.webapp-cloudfront-access.cloudfront_access_identity_path
-    }
+    origin_id   = "runningdinner-web"
+    origin_access_control_id = aws_cloudfront_origin_access_control.webapp.id
   }
 
   restrictions {
@@ -110,6 +140,12 @@ resource "aws_cloudfront_distribution" "runningdinner" {
   }
 
   aliases = [var.domain_name]
+}
+
+resource "aws_cloudfront_function" "runningdinner" {
+  name = "rewrite-routes"
+  code = file("../../files/rewrite-routes.js")
+  runtime     = "cloudfront-js-1.0"
 }
 
 # *** Bucket and Permissions for Cloudfront logs
@@ -156,16 +192,34 @@ resource "aws_s3_bucket_lifecycle_configuration" "webapp-access-logs" {
   }
 }
 
+#data "aws_iam_policy_document" "webapp-access-logs" {
+#  statement {
+#    actions   = ["s3:*"]
+#    resources = [aws_s3_bucket.webapp-access-logs.arn]
+#    principals {
+#      type        = "AWS"
+#      identifiers = [aws_cloudfront_origin_access_identity.webapp-cloudfront-access.iam_arn]
+#    }
+#  }
+#}
+
 data "aws_iam_policy_document" "webapp-access-logs" {
   statement {
     actions   = ["s3:*"]
     resources = [aws_s3_bucket.webapp-access-logs.arn]
     principals {
-      type        = "AWS"
-      identifiers = [aws_cloudfront_origin_access_identity.webapp-cloudfront-access.iam_arn]
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
     }
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.runningdinner.arn]
+    }
+
   }
 }
+
 resource "aws_s3_bucket_policy" "webapp-access-logs" {
   bucket = aws_s3_bucket.webapp-access-logs.id
   policy = data.aws_iam_policy_document.webapp-access-logs.json

@@ -27,13 +27,13 @@ resource "aws_s3_bucket_website_configuration" "webapp" {
 resource "aws_s3_bucket_acl" "webapp" {
   bucket = aws_s3_bucket.webapp.id
   acl = "private"
-  depends_on = [ aws_s3_bucket_public_access_block.webapp ]
+#  depends_on = [ aws_s3_bucket_public_access_block.webapp ]
 }
 
-resource "aws_s3_bucket_public_access_block" "webapp" {
-  bucket = aws_s3_bucket.webapp.id
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
+#resource "aws_s3_bucket_public_access_block" "webapp" {
+#  bucket = aws_s3_bucket.webapp.id
+#  block_public_acls       = true
+#  block_public_policy     = true
+#  ignore_public_acls      = true
+#  restrict_public_buckets = true
+#}
