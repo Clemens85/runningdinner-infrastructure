@@ -185,6 +185,11 @@ resource  "aws_iam_policy" "ci-user-policy" {
           "events:DeleteRule"
       ],
       "Resource": [ "*" ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [ "ecs:*" ],
+      "Resource": [ "*" ]
     }
   ]
 }
