@@ -47,6 +47,10 @@ data "aws_s3_bucket" "webapp" {
 #  signing_protocol                  = "sigv4"
 #}
 
+data "aws_cloudfront_cache_policy" "caching-optimized" {
+  name = "Managed-CachingOptimized"
+}
+
 resource "aws_cloudfront_distribution" "runningdinner" {
   enabled = true
 
@@ -66,14 +70,8 @@ resource "aws_cloudfront_distribution" "runningdinner" {
     cached_methods         = ["HEAD", "GET"]
     target_origin_id       = "runningdinner-web"
     viewer_protocol_policy = "allow-all"
-    # cache_policy_id = "" # TODO: Get cache policy id for S3
-    forwarded_values {
-      query_string = true
-      cookies {
-        forward = "all"
-      }
-      headers = []
-    }
+    cache_policy_id = data.aws_cloudfront_cache_policy.caching-optimized.id
+    compress = true
 #    function_association {
 #      event_type   = "viewer-request"
 #      function_arn = aws_cloudfront_function.runningdinner.arn
