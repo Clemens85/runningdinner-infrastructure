@@ -10,57 +10,42 @@ data "aws_instance" "runningdinner-app-instance" {
   }
 }
 
-
 data "aws_s3_bucket" "webapp" {
   bucket = var.webapp_bucket_name
 }
 
 #data "aws_iam_policy_document" "webapp" {
 #  statement {
-#    actions   = ["s3:*"]
-#    resources = [data.aws_s3_bucket.webapp.arn]
+#    sid = "AllowCloudFrontAccessToBucket"
+#
+#    actions = ["s3:*"]
+#    resources = ["${data.aws_s3_bucket.webapp.arn}/*"]
+#
 #    principals {
-#      type        = "AWS"
-#      identifiers = [aws_cloudfront_origin_access_identity.webapp-cloudfront-access.iam_arn]
+#      type        = "Service"
+#      identifiers = ["cloudfront.amazonaws.com"]
+#    }
+#    condition {
+#      test     = "StringEquals"
+#      variable = "AWS:SourceArn"
+#      values   = [aws_cloudfront_distribution.runningdinner.arn]
 #    }
 #  }
 #}
-
-data "aws_iam_policy_document" "webapp" {
-  statement {
-    sid = "AllowCloudFrontAccessToBucket"
-
-    actions = ["s3:*"]
-    resources = ["${data.aws_s3_bucket.webapp.arn}"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["cloudfront.amazonaws.com"]
-    }
-    condition {
-      test     = "StringEquals"
-      variable = "AWS:SourceArn"
-      values   = [aws_cloudfront_distribution.runningdinner.arn]
-    }
-  }
-}
-
-resource "aws_s3_bucket_policy" "webapp" {
-  bucket = data.aws_s3_bucket.webapp.id
-  policy = data.aws_iam_policy_document.webapp.json
-}
-
-#resource "aws_cloudfront_origin_access_identity" "webapp-cloudfront-access" {
-#  comment = "Allows access of webapp bucket from Cloudfront"
+#
+#resource "aws_s3_bucket_policy" "webapp" {
+#  bucket = data.aws_s3_bucket.webapp.id
+#  policy = data.aws_iam_policy_document.webapp.json
 #}
 
-resource "aws_cloudfront_origin_access_control" "webapp" {
-  name                              = "oac-access-s3-web-bucket"
-  description                       = ""
-  origin_access_control_origin_type = "s3"
-  signing_behavior                  = "always"
-  signing_protocol                  = "sigv4"
-}
+
+#resource "aws_cloudfront_origin_access_control" "webapp" {
+#  name                              = "oac-access-s3-web-bucket"
+#  description                       = ""
+#  origin_access_control_origin_type = "s3"
+#  signing_behavior                  = "always"
+#  signing_protocol                  = "sigv4"
+#}
 
 resource "aws_cloudfront_distribution" "runningdinner" {
   enabled = true
@@ -79,8 +64,9 @@ resource "aws_cloudfront_distribution" "runningdinner" {
   default_cache_behavior {
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods         = ["HEAD", "GET"]
-    target_origin_id       = "runningdinner-app"
+    target_origin_id       = "runningdinner-web"
     viewer_protocol_policy = "allow-all"
+    # cache_policy_id = "" # TODO: Get cache policy id for S3
     forwarded_values {
       query_string = true
       cookies {
@@ -97,7 +83,7 @@ resource "aws_cloudfront_distribution" "runningdinner" {
   ordered_cache_behavior {
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods         = ["HEAD", "GET"]
-    path_pattern           = "/rest"
+    path_pattern           = "/rest/*"
     target_origin_id       = "runningdinner-app"
     viewer_protocol_policy = "allow-all"
     forwarded_values {
@@ -106,7 +92,7 @@ resource "aws_cloudfront_distribution" "runningdinner" {
         forward = "all"
       }
     }
-    max_ttl = 120
+    max_ttl = 0
     min_ttl = 0
     default_ttl = 0
   }
@@ -121,12 +107,22 @@ resource "aws_cloudfront_distribution" "runningdinner" {
       origin_ssl_protocols   = ["TLSv1.2"]
     }
   }
-
   origin {
-    domain_name = data.aws_s3_bucket.webapp.bucket_regional_domain_name
+    domain_name = data.aws_s3_bucket.webapp.website_endpoint
     origin_id   = "runningdinner-web"
-    origin_access_control_id = aws_cloudfront_origin_access_control.webapp.id
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
   }
+
+#  origin {
+#    domain_name = data.aws_s3_bucket.webapp.bucket_regional_domain_name
+#    origin_id   = "runningdinner-web"
+#    origin_access_control_id = aws_cloudfront_origin_access_control.webapp.id
+#  }
 
   restrictions {
     geo_restriction {
@@ -191,17 +187,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "webapp-access-logs" {
     }
   }
 }
-
-#data "aws_iam_policy_document" "webapp-access-logs" {
-#  statement {
-#    actions   = ["s3:*"]
-#    resources = [aws_s3_bucket.webapp-access-logs.arn]
-#    principals {
-#      type        = "AWS"
-#      identifiers = [aws_cloudfront_origin_access_identity.webapp-cloudfront-access.iam_arn]
-#    }
-#  }
-#}
 
 data "aws_iam_policy_document" "webapp-access-logs" {
   statement {

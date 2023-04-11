@@ -22,7 +22,7 @@ if [ ! -d "$CONTENT_BUILD_DIR" ] || [ ! "$(ls -A $CONTENT_BUILD_DIR)" ]; then
   exit 1
 fi
 
-aws s3 sync "$CONTENT_BUILD_DIR/" "s3://$BUCKET_NAME"
+aws s3 sync "$CONTENT_BUILD_DIR/" "s3://$BUCKET_NAME" --delete
 
 source clear-aws-cli.sh
 
