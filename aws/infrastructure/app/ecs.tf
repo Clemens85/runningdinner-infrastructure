@@ -54,7 +54,9 @@ resource "aws_ecs_service" "runningdinner-ecs-service" {
   #    subnets               = [data.aws_subnets.runningdinner-app-subnets.ids[0]]
   #    assign_public_ip      = "false"
   #  }
-  force_new_deployment = true
+
+  force_new_deployment = var.force_backend_deployment
+
   deployment_circuit_breaker {
     enable   = true
     rollback = true

@@ -23,7 +23,9 @@ $(aws sts assume-role \
 --profile runningdinner-$passedStage \
 --output text))
 
-aws ecs update-service --cluster runningdinner-ecs-cluster --service runningdinner-service --task-definition runningdinner-backend --force-new-deployment
+aws ecs update-service --cluster runningdinner-ecs-cluster --service runningdinner-service --task-definition runningdinner-backend \
+                       --deployment-configuration "minimumHealthyPercent=0" --desired-count 1 \
+                       --force-new-deployment
 
 unset AWS_ACCESS_KEY_ID
 unset AWS_SECRET_ACCESS_KEY
