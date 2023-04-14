@@ -95,6 +95,16 @@ resource "aws_cloudfront_distribution" "runningdinner" {
     default_ttl = 0
   }
 
+  ordered_cache_behavior {
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["HEAD", "GET"]
+    path_pattern           = "/resources/*"
+    target_origin_id       = "runningdinner-app"
+    viewer_protocol_policy = "allow-all"
+    cache_policy_id = data.aws_cloudfront_cache_policy.caching-optimized.id
+    compress = true
+  }
+
   origin {
     domain_name = data.aws_instance.runningdinner-app-instance.public_dns
     origin_id   = "runningdinner-app"

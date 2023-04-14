@@ -32,15 +32,6 @@ data "aws_iam_policy_document" "webapp" {
       identifiers = ["*"]
     }
   }
-  statement {
-    sid = "AllowPublicReadonlyAccessList"
-    actions = ["s3:ListBucket"]
-    resources = [aws_s3_bucket.webapp.arn]
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-  }
 }
 
 resource "aws_s3_bucket_policy" "webapp" {
