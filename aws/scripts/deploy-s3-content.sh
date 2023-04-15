@@ -15,8 +15,17 @@ if [[ -z "$BUCKET_NAME" ]]; then
   exit 1
 fi
 
-CONTENT_BUILD_DIR="../../../runningdinner/runningdinner-client/packages/webapp/build"
+GOOGLE_MAPS_KEY=$(aws ssm get-parameter --name "/runningdinner/googlemaps/apikey" --with-decryption --query "Parameter.Value" --output text)
+export REACT_APP_GOOGLE_MAPS_KEY_JS="$GOOGLE_MAPS_KEY"
+echo "Gotten key = $REACT_APP_GOOGLE_MAPS_KEY_JS"
 
+CLIENT_DIR="../../../runningdinner/runningdinner-client"
+
+SCRIPT_DIR=$(pwd)
+cd "$CLIENT_DIR" && yarn run build
+cd $SCRIPT_DIR
+
+CONTENT_BUILD_DIR="$CLIENT_DIR/packages/webapp/build"
 if [ ! -d "$CONTENT_BUILD_DIR" ] || [ ! "$(ls -A $CONTENT_BUILD_DIR)" ]; then
   echo "$CONTENT_BUILD_DIR does either not exist or has no files inside"
   exit 1
