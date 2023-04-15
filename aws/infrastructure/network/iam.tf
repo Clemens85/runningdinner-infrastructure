@@ -86,6 +86,11 @@ resource "aws_iam_role_policy_attachment" "ecs-image-pull-policy-attachment" {
 resource "aws_iam_user" "ci_user" {
   name = "ci_user"
 }
+
+resource "aws_iam_access_key" "ci_user" {
+  user = aws_iam_user.ci_user.name
+}
+
 resource  "aws_iam_policy" "ci-user-policy" {
   name = "ci-user-policy"
   policy = <<POLICY

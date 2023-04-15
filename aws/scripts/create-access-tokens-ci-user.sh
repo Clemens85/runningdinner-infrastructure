@@ -10,10 +10,15 @@ source setup-aws-cli.sh
 # Set the name of the IAM user
 USERNAME=ci_user
 
-# Generate the access key ID and secret access key for the IAM user
+# Query for an existing access key and delete it (if existing):
 KEYS=$(aws iam create-access-key --user-name $USERNAME --output json)
+ACCESS_KEY=$(echo $KEYS | jq -r '.AccessKey.AccessKeyId')
+if [[ -n "$ACCESS_KEY" ]]; then
+  aws iam delete-access-key --user-name $USERNAME --access-key-id $ACCESS_KEY
+fi
 
-# Extract the access key ID and secret access key from the response JSON
+# Now create a new one and extract the token values:
+KEYS=$(aws iam create-access-key --user-name $USERNAME --output json)
 ACCESS_KEY=$(echo $KEYS | jq -r '.AccessKey.AccessKeyId')
 SECRET_KEY=$(echo $KEYS | jq -r '.AccessKey.SecretAccessKey')
 
