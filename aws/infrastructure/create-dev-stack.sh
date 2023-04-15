@@ -12,3 +12,6 @@ set +e
 
 ../infrastructure/tf.sh dev app init
 ../infrastructure/tf.sh dev app apply -auto-approve
+
+../infrastructure/tf.sh dev dns init
+../infrastructure/tf.sh dev dns apply -auto-approve
