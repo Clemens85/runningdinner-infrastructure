@@ -21,8 +21,9 @@ echo "Gotten key = $REACT_APP_GOOGLE_MAPS_KEY_JS"
 
 CLIENT_DIR="../../../runningdinner/runningdinner-client"
 
+echo "Building runningdinner-client"
 SCRIPT_DIR=$(pwd)
-cd "$CLIENT_DIR" && yarn run build
+cd $CLIENT_DIR && yarn run build
 cd $SCRIPT_DIR
 
 CONTENT_BUILD_DIR="$CLIENT_DIR/packages/webapp/build"
@@ -31,6 +32,7 @@ if [ ! -d "$CONTENT_BUILD_DIR" ] || [ ! "$(ls -A $CONTENT_BUILD_DIR)" ]; then
   exit 1
 fi
 
+echo "Deploying to $BUCKET_NAME"
 aws s3 sync "$CONTENT_BUILD_DIR/" "s3://$BUCKET_NAME" --delete
 
 source clear-aws-cli.sh
