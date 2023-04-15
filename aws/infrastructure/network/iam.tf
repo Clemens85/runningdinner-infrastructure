@@ -195,6 +195,11 @@ resource  "aws_iam_policy" "ci-user-policy" {
       "Effect": "Allow",
       "Action": [ "ecs:*" ],
       "Resource": [ "*" ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ssm:GetParameter*"],
+      "Resource": ["*"]
     }
   ]
 }
