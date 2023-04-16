@@ -1,9 +1,3 @@
-
-
-data "aws_ssm_parameter" "geocode-participant-sqs-arn" {
-  name = "/runningdinner/geocode-participant/sqs/arn"
-}
-
 resource "aws_ecs_cluster" "runningdinner" {
   name = "runningdinner-ecs-cluster"
   tags = local.common_tags

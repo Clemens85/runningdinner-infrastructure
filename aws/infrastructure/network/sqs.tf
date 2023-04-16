@@ -1,7 +1,3 @@
-#data "aws_iam_user" "technical-user" {
-#  user_name = "technical-user"
-#}
-
 resource "aws_sqs_queue" "geocode-participant" {
   name = "geocode-participant"
   redrive_policy = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.geocode-participant-dl.arn}\",\"maxReceiveCount\":5}"
@@ -28,9 +24,9 @@ resource "aws_sqs_queue" "geocode-participant-dl" {
   tags = local.common_tags
 }
 
-resource "aws_ssm_parameter" "geocode-participant-arn" {
+resource "aws_ssm_parameter" "geocode-participant-url" {
   type = "String"
-  name = "/runningdinner/geocode-participant/sqs/arn"
+  name = "/runningdinner/geocode-participant/sqs/url"
   tags = local.common_tags
-  value = aws_sqs_queue.geocode-participant.arn
+  value = aws_sqs_queue.geocode-participant.url
 }
