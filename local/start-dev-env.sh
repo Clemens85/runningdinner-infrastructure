@@ -17,6 +17,9 @@ echo "DOCKER_HOST_IP=$dockerHostIp" > .env
 docker-compose up -d --remove-orphans
 sleep 2s
 docker exec -d postgres13 bash /docker-entrypoint-initdb.d/init-db.sh
-# docker exec -it db bash
 
+./localstack/create-local-sqs.sh
+./localstack/create-googlemaps-api-key-local.sh
+
+# docker exec -it db bash
 # dockerHostIp="172.18.0.1"
