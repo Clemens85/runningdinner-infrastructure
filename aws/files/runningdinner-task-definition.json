@@ -50,7 +50,11 @@
       },
       {
         "name": "AWS_SQS_GEOCODE_URL",
-        "valueFrom": "/runningdinner/geocode-participant/sqs/arn"
+        "valueFrom": "/runningdinner/geocode-participant/sqs/url"
+      },
+      {
+        "name": "AWS_SQS_AFTERPARTYLOCATION_URL",
+        "valueFrom": "/runningdinner/geocode-participant/sqs/url"
       }
     ],
     "mountPoints": [
