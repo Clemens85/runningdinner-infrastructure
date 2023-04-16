@@ -13,5 +13,6 @@ set +e
 ../infrastructure/tf.sh dev database init
 ../infrastructure/tf.sh dev database destroy -auto-approve
 
+../scripts/delete-access-tokens-ci-user.sh dev # Otherwise terraform cannot delete ci-user
 ../infrastructure/tf.sh dev network init
 ../infrastructure/tf.sh dev network destroy -auto-approve
