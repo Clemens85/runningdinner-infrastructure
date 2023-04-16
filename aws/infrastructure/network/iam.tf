@@ -196,6 +196,17 @@ resource  "aws_iam_policy" "ci-user-policy" {
       "Effect": "Allow",
       "Action": ["ssm:GetParameter*"],
       "Resource": ["*"]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "cloudfront:CreateInvalidation",
+          "cloudfront:GetDistribution",
+          "cloudfront:GetInvalidation",
+          "cloudfront:ListDistributions",
+          "cloudfront:ListInvalidations"
+      ],
+      "Resource": ["*"]
     }
   ]
 }
