@@ -9,7 +9,8 @@ resource "aws_ecs_task_definition" "runningdinner" {
   family                   = "runningdinner-backend"
   network_mode             = "host"                                                                                      # network mode awsvpc, brigde
   # memory                   = "300"
-  cpu                      = 1000 # 0.8 CPU units
+  # cpu                      = 1000 # 0.8 CPU units
+  # cpu = 1536
   requires_compatibilities = ["EC2"]# Fargate or EC2
   volume {
     name = "app-logs"

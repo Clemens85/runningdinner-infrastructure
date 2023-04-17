@@ -63,7 +63,7 @@
         "sourceVolume": "app-logs"
       }
     ],
-    "memoryReservation": 300,
+    "memory": 800,
     "volumesFrom": [],
     "healthCheck": {
       "command": [ "CMD-SHELL", "wget -qO- http://localhost/health || exit 1" ],
