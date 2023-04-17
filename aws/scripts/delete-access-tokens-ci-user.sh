@@ -11,10 +11,10 @@ source setup-aws-cli.sh
 USERNAME=ci_user
 
 # Query for an existing access key and delete it (if existing):
-KEYS=$(aws iam create-access-key --user-name $USERNAME --output json)
-ACCESS_KEY=$(echo $KEYS | jq -r '.AccessKey.AccessKeyId')
+KEYS=$(aws iam list-access-keys --user-name $USERNAME --output json)
+ACCESS_KEY=$(echo $KEYS | jq -r '.AccessKeyMetadata[0].AccessKeyId')
 if [[ -n "$ACCESS_KEY" ]]; then
-  echo "Deleting Access token"
+  echo "Deleting Access token $ACCESS_KEY"
   aws iam delete-access-key --user-name $USERNAME --access-key-id $ACCESS_KEY
 fi
 
