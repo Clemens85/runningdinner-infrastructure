@@ -1,5 +1,6 @@
 resource "aws_route53_zone" "runningdinner" {
   name = "${var.domain_name}."
+  comment = "HostedZone created by Route53 Registrar"
   tags = local.common_tags
 }
 
@@ -8,7 +9,7 @@ resource "aws_route53_record" "google-site-verification" {
   type = "TXT"
   zone_id = aws_route53_zone.runningdinner.id
   records = ["google-site-verification=mkZzpyYlrX3vVbFf70RZyxkKMvVDpf8WowRfapqjPtg"]
-  ttl = 900
+  ttl = 300
 }
 
 resource "aws_route53_record" "sendgrid-s1-domainkey" {
