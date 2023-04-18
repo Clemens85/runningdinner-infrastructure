@@ -14,38 +14,38 @@ data "aws_s3_bucket" "webapp" {
   bucket = var.webapp_bucket_name
 }
 
-#data "aws_iam_policy_document" "webapp" {
-#  statement {
-#    sid = "AllowCloudFrontAccessToBucket"
-#
-#    actions = ["s3:*"]
-#    resources = ["${data.aws_s3_bucket.webapp.arn}/*"]
-#
-#    principals {
-#      type        = "Service"
-#      identifiers = ["cloudfront.amazonaws.com"]
-#    }
-#    condition {
-#      test     = "StringEquals"
-#      variable = "AWS:SourceArn"
-#      values   = [aws_cloudfront_distribution.runningdinner.arn]
-#    }
-#  }
-#}
-#
-#resource "aws_s3_bucket_policy" "webapp" {
-#  bucket = data.aws_s3_bucket.webapp.id
-#  policy = data.aws_iam_policy_document.webapp.json
-#}
+data "aws_iam_policy_document" "webapp" {
+  statement {
+    sid = "AllowCloudFrontAccessToBucket"
+
+    actions = ["s3:*"]
+    resources = ["${data.aws_s3_bucket.webapp.arn}/*"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.runningdinner.arn]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "webapp" {
+  bucket = data.aws_s3_bucket.webapp.id
+  policy = data.aws_iam_policy_document.webapp.json
+}
 
 
-#resource "aws_cloudfront_origin_access_control" "webapp" {
-#  name                              = "oac-access-s3-web-bucket"
-#  description                       = ""
-#  origin_access_control_origin_type = "s3"
-#  signing_behavior                  = "always"
-#  signing_protocol                  = "sigv4"
-#}
+resource "aws_cloudfront_origin_access_control" "webapp" {
+  name                              = "oac-access-s3-web-bucket"
+  description                       = "OAC for S3 web with Cloudfront"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
 
 data "aws_cloudfront_cache_policy" "caching-optimized" {
   name = "Managed-CachingOptimized"
@@ -59,11 +59,11 @@ resource "aws_cloudfront_distribution" "runningdinner" {
     prefix = "logs/"
   }
 
-  custom_error_response {
-    error_code = 404
-    response_code = 200
-    response_page_path = "/index.html"
-  }
+#  custom_error_response {
+#    error_code = 404
+#    response_code = 200
+#    response_page_path = "/index.html"
+#  }
 
   default_cache_behavior {
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
@@ -72,10 +72,10 @@ resource "aws_cloudfront_distribution" "runningdinner" {
     viewer_protocol_policy = "allow-all"
     cache_policy_id = data.aws_cloudfront_cache_policy.caching-optimized.id
     compress = true
-#    function_association {
-#      event_type   = "viewer-request"
-#      function_arn = aws_cloudfront_function.runningdinner.arn
-#    }
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.runningdinner.arn
+    }
   }
 
   ordered_cache_behavior {
@@ -115,22 +115,23 @@ resource "aws_cloudfront_distribution" "runningdinner" {
       origin_ssl_protocols   = ["TLSv1.2"]
     }
   }
-  origin {
-    domain_name = data.aws_s3_bucket.webapp.website_endpoint
-    origin_id   = "runningdinner-web"
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_protocol_policy = "http-only"
-      origin_ssl_protocols   = ["TLSv1.2"]
-    }
-  }
 
 #  origin {
-#    domain_name = data.aws_s3_bucket.webapp.bucket_regional_domain_name
+#    domain_name = data.aws_s3_bucket.webapp.website_endpoint
 #    origin_id   = "runningdinner-web"
-#    origin_access_control_id = aws_cloudfront_origin_access_control.webapp.id
+#    custom_origin_config {
+#      http_port              = 80
+#      https_port             = 443
+#      origin_protocol_policy = "http-only"
+#      origin_ssl_protocols   = ["TLSv1.2"]
+#    }
 #  }
+
+  origin {
+    domain_name = data.aws_s3_bucket.webapp.bucket_regional_domain_name
+    origin_id   = "runningdinner-web"
+    origin_access_control_id = aws_cloudfront_origin_access_control.webapp.id
+  }
 
   restrictions {
     geo_restriction {

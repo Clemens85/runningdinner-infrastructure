@@ -18,32 +18,30 @@ resource "aws_s3_bucket_website_configuration" "webapp" {
 
 resource "aws_s3_bucket_acl" "webapp" {
   bucket = aws_s3_bucket.webapp.id
-  acl = "public-read"
-#  depends_on = [ aws_s3_bucket_public_access_block.webapp ]
+  acl = "private"
+  depends_on = [ aws_s3_bucket_public_access_block.webapp ]
 }
 
-data "aws_iam_policy_document" "webapp" {
-  statement {
-    sid = "AllowPublicReadonlyAccess"
-    actions = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.webapp.arn}/*"]
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-  }
-}
-
-resource "aws_s3_bucket_policy" "webapp" {
-  bucket = aws_s3_bucket.webapp.id
-  policy = data.aws_iam_policy_document.webapp.json
-}
-
-
-#resource "aws_s3_bucket_public_access_block" "webapp" {
-#  bucket = aws_s3_bucket.webapp.id
-#  block_public_acls       = true
-#  block_public_policy     = true
-#  ignore_public_acls      = true
-#  restrict_public_buckets = true
+#data "aws_iam_policy_document" "webapp" {
+#  statement {
+#    sid = "AllowPublicReadonlyAccess"
+#    actions = ["s3:GetObject"]
+#    resources = ["${aws_s3_bucket.webapp.arn}/*"]
+#    principals {
+#      type        = "*"
+#      identifiers = ["*"]
+#    }
+#  }
 #}
+#resource "aws_s3_bucket_policy" "webapp" {
+#  bucket = aws_s3_bucket.webapp.id
+#  policy = data.aws_iam_policy_document.webapp.json
+#}
+
+resource "aws_s3_bucket_public_access_block" "webapp" {
+  bucket = aws_s3_bucket.webapp.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
