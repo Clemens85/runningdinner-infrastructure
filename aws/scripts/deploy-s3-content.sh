@@ -1,7 +1,5 @@
 #! /bin/bash
 
-#env -i bash
-
 set +e
 
 CUR_DIR_TF=$(pwd)

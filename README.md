@@ -66,7 +66,8 @@ Example policy of trust relationship:
 }
 ```
 
-This role must further also have the appropriate access policies assigned, e.g. `AdministratorAccess`. 
+This role must further also have the appropriate access policies assigned, e.g. `AdministratorAccess`.<br/> 
+(The name "terraform-dev" is unfortunate due to it is the same for all stages)
 
 See also https://medium.com/@aw.panda.aws/4-steps-to-deploy-to-multiple-aws-accounts-with-terraform-bbb00bb4e789
 
@@ -80,4 +81,13 @@ It must match the configuration in `./aws/config/config.sh`
 The ~/.aws/credentials must contain both a profile runningdinner-dev and runningdinner-prod whith tokens
 matching the appropriate IAM users created above.
 
+## Parameter Store Entries
+
+Following Parameter Store entries must exist (as secrets) in each account:
+
+* /runningdinner/dockerhub/credentials
+* /runningdinner/logzio/token
+* /runningdinner/googlemaps/apikey
+
+Use `./aws/scripts/create-ssm-paraemter.sh` respectively `./aws/scripts/create-dockerhub-credentials.sh` scripts.  
 
