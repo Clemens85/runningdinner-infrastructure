@@ -15,7 +15,7 @@ echo "Using aws account $awsAccountId"
 
 export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
 $(aws sts assume-role \
---role-arn arn:aws:iam::${awsAccountId}:role/terraform-dev \
+--role-arn arn:aws:iam::${awsAccountId}:role/terraform-${passedStage} \
 --role-session-name tf-backend-bucket \
 --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" \
 --profile runningdinner-$passedStage \
