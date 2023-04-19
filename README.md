@@ -91,3 +91,9 @@ Following Parameter Store entries must exist (as secrets) in each account:
 
 Use `./aws/scripts/create-ssm-paraemter.sh` respectively `./aws/scripts/create-dockerhub-credentials.sh` scripts.  
 
+## Manual Deployment of App
+
+If CircleCI not available:
+
+* Backend: `./aws/scripts/deploy-ecs-task.sh <STAGE>` (deploys latest tag)
+* Frontend: `./aws/scripts/deploy-s3-content.sh <STAGE> runningdinner-web-<STAGE>`
