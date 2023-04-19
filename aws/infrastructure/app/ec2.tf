@@ -113,7 +113,12 @@ EOF
 resource "aws_eip" "runningdinner-appserver-ip" {
   instance = aws_instance.runningdinner-appserver.id
   vpc      = true
-  tags = local.common_tags
+  tags = merge(
+    local.common_tags,
+    tomap({
+      "Name" = var.app_instance_name
+    })
+  )
 }
 
 resource "null_resource" "runningdinner-appserver-ip-log" {

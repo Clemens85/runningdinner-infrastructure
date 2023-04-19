@@ -27,6 +27,11 @@ resource "aws_ecs_task_definition" "runningdinner" {
   task_role_arn            = data.aws_iam_role.app-instance-role.arn
   tags = local.common_tags
   depends_on = [ aws_instance.runningdinner-appserver ]
+
+  # Uncomment this for not updating ECS service
+#  lifecycle {
+#    ignore_changes = [ container_definitions ]
+#  }
 }
 
 data "template_file" "runningdinner-app-task-definition-file" {
@@ -56,9 +61,12 @@ resource "aws_ecs_service" "runningdinner-ecs-service" {
     enable   = true
     rollback = true
   }
-#  triggers = {
-#    redeployment = timestamp()
+
+  # Uncomment this for don't updating ECS service
+#  lifecycle {
+#    ignore_changes = [ task_definition ]
 #  }
+
   tags = local.common_tags
 }
 
