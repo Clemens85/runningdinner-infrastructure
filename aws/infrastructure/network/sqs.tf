@@ -30,3 +30,10 @@ resource "aws_ssm_parameter" "geocode-participant-url" {
   tags = local.common_tags
   value = aws_sqs_queue.geocode-participant.url
 }
+
+resource "aws_ssm_parameter" "geocode-participant-arn" {
+  type = "String"
+  name = "/runningdinner/geocode-participant/sqs/arn"
+  tags = local.common_tags
+  value = aws_sqs_queue.geocode-participant.arn
+}

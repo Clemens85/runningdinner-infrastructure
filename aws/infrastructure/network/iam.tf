@@ -118,7 +118,10 @@ resource  "aws_iam_policy" "ci-user-policy" {
           "cloudformation:PreviewStackUpdate",
           "cloudformation:CreateStack",
           "cloudformation:UpdateStack",
-          "cloudformation:ValidateTemplate"
+          "cloudformation:ValidateTemplate",
+          "cloudformation:DeleteChangeSet",
+          "cloudformation:CreateChangeSet",
+          "cloudformation:ExecuteChangeSet"
       ],
       "Resource": [ "*" ]
     },
