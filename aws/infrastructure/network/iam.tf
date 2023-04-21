@@ -146,7 +146,8 @@ resource  "aws_iam_policy" "ci-user-policy" {
           "lambda:GetFunctionConfiguration",
           "lambda:AddPermission",
           "lambda:RemovePermission",
-          "lambda:InvokeFunction"
+          "lambda:InvokeFunction",
+          "lambda:ListTags"
       ],
       "Resource": [ "*" ]
     },
@@ -175,7 +176,9 @@ resource  "aws_iam_policy" "ci-user-policy" {
           "logs:DeleteLogGroup",
           "logs:DeleteLogStream",
           "logs:DescribeLogStreams",
-          "logs:FilterLogEvents"
+          "logs:FilterLogEvents",
+          "logs:TagResource",
+          "logs:PutRetentionPolicy"
       ],
       "Resource": [ "*" ]
     },
