@@ -128,7 +128,7 @@ resource "null_resource" "runningdinner-appserver-ip-log" {
   depends_on = [aws_eip.runningdinner-appserver-ip]
   provisioner "local-exec" {
     command = <<EOF
-      echo ${aws_eip.runningdinner-appserver-ip.public_ip} > .appserver-ip.txt
+      echo ${aws_eip.runningdinner-appserver-ip.public_ip} > .appserver-ip-${var.stage}.txt
     EOF
   }
 }

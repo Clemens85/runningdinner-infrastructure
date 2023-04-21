@@ -38,7 +38,7 @@ resource "aws_db_instance" "runningdinner-db" {
   instance_class         = "db.t3.micro"
   allocated_storage      = 10
   engine                 = "postgres"
-  engine_version         = "13.4"
+  engine_version         = "13.7"
   username               = aws_ssm_parameter.runningdinner-db-username-admin.value
   password               = random_password.runningdinner-db-password-admin.result
   db_subnet_group_name   = data.aws_db_subnet_group.runningdinner-db-subnet.name
@@ -84,7 +84,7 @@ resource "null_resource" "runningdinner-database-address-log" {
   depends_on = [aws_db_instance.runningdinner-db]
   provisioner "local-exec" {
     command = <<EOF
-      echo ${aws_db_instance.runningdinner-db.address} > .db-address.txt
+      echo ${aws_db_instance.runningdinner-db.address} > .db-address-${var.stage}.txt
     EOF
   }
 }
