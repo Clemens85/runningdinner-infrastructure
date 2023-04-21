@@ -105,7 +105,16 @@ resource  "aws_iam_policy" "ci-user-policy" {
       "Effect": "Allow",
       "Action": [
         "iam:PassRole",
-        "iam:GetRole"
+        "iam:GetRole",
+        "iam:CreateRole",
+        "iam:DeleteRolePolicy",
+        "iam:PutRolePolicy",
+        "iam:List*",
+        "iam:PassRole",
+        "iam:DeleteRole",
+        "iam:AttachRolePolicy",
+        "iam:TagRole",
+        "iam:UntagRole"
       ],
       "Resource": [ "*" ]
     },
@@ -133,21 +142,7 @@ resource  "aws_iam_policy" "ci-user-policy" {
     {
       "Effect": "Allow",
       "Action": [
-          "lambda:GetFunction",
-          "lambda:CreateFunction",
-          "lambda:DeleteFunction",
-          "lambda:UpdateFunctionConfiguration",
-          "lambda:UpdateFunctionCode",
-          "lambda:ListVersionsByFunction",
-          "lambda:PublishVersion",
-          "lambda:CreateAlias",
-          "lambda:DeleteAlias",
-          "lambda:UpdateAlias",
-          "lambda:GetFunctionConfiguration",
-          "lambda:AddPermission",
-          "lambda:RemovePermission",
-          "lambda:InvokeFunction",
-          "lambda:ListTags"
+          "lambda:*"
       ],
       "Resource": [ "*" ]
     },
@@ -170,15 +165,7 @@ resource  "aws_iam_policy" "ci-user-policy" {
     {
       "Effect": "Allow",
       "Action": [
-          "logs:DescribeLogGroups",
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:DeleteLogGroup",
-          "logs:DeleteLogStream",
-          "logs:DescribeLogStreams",
-          "logs:FilterLogEvents",
-          "logs:TagResource",
-          "logs:PutRetentionPolicy"
+          "logs:*"
       ],
       "Resource": [ "*" ]
     },
