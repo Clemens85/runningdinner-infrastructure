@@ -75,7 +75,7 @@ if [[ " ${subCommandsWithVars[@]} " =~ ${TF_COMMAND} ]]; then
   # shellcheck disable=SC2145
   checkPassedStageAndConfigDirMatchesCurrentContext "$STAGE" "$TF_CONFIG_DIR"
   echo "Running in $(pwd): terraform $TF_COMMAND $TF_VAR_FILE_CONFIG ${@:4}"
-  terraform "$TF_COMMAND" $TF_VAR_FILE_CONFIG "${@:4}"
+  terraform "$TF_COMMAND" $TF_VAR_FILE_CONFIG -compact-warnings "${@:4}"
 elif [[ " ${subCommandsWithoutVars[@]} " =~ ${TF_COMMAND} ]]; then
   printCurrentTerraformContext
   # shellcheck disable=SC2145
