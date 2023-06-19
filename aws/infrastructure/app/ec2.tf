@@ -77,6 +77,12 @@ resource "aws_instance" "runningdinner-appserver" {
   subnet_id = data.aws_subnets.runningdinner-app-subnets.ids[0]
   iam_instance_profile = aws_iam_instance_profile.app-instance-role-profile.name
 
+  # Switch EBS volume to gp3 instaed of gp2 (which is a little cheaper)...
+  # Default size of 30 Gib can unfortunately not be adapted due to AMI restrictions
+  root_block_device {
+    volume_type = "gp3"
+  }
+
   user_data = <<EOF
 #!/bin/bash
 # *** ECS Config *** #
