@@ -162,6 +162,15 @@ resource "aws_s3_bucket" "webapp-access-logs" {
 
 data "aws_canonical_user_id" "current" {}
 
+
+resource "aws_s3_bucket_ownership_controls" "webapp-access-logs" {
+  bucket = aws_s3_bucket.webapp-access-logs.id
+  rule {
+    object_ownership = "ObjectWriter"
+  }
+}
+
+
 resource "aws_s3_bucket_acl" "webapp-access-logs" {
   bucket = aws_s3_bucket.webapp-access-logs.id
   access_control_policy {
@@ -184,6 +193,7 @@ resource "aws_s3_bucket_acl" "webapp-access-logs" {
       permission = "FULL_CONTROL"
     }
   }
+  depends_on = [ aws_s3_bucket_ownership_controls.webapp-access-logs, aws_s3_bucket_public_access_block.webapp-access-logs ]
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "webapp-access-logs" {
