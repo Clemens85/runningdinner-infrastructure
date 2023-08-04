@@ -55,6 +55,18 @@
       {
         "name": "AWS_SQS_AFTERPARTYLOCATION_URL",
         "valueFrom": "/runningdinner/geocode-participant/sqs/url"
+      },
+      {
+        "name": "PAYPAL_BASEURL",
+        "valueFrom": "/runningdinner/paypal/baseurl"
+      },
+      {
+        "name": "PAYPAL_CLIENTID",
+        "valueFrom": "/runningdinner/paypal/clientid"
+      },
+      {
+        "name": "PAYPAL_SECRET",
+        "valueFrom": "/runningdinner/paypal/secret"
       }
     ],
     "mountPoints": [
