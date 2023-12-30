@@ -116,25 +116,25 @@ EOF
   )
 }
 
-resource "aws_eip" "runningdinner-appserver-ip" {
-  instance = aws_instance.runningdinner-appserver.id
-  vpc      = true
-  tags = merge(
-    local.common_tags,
-    tomap({
-      "Name" = var.app_instance_name
-    })
-  )
-}
+# resource "aws_eip" "runningdinner-appserver-ip" {
+#   instance = aws_instance.runningdinner-appserver.id
+#   vpc      = true
+#   tags = merge(
+#     local.common_tags,
+#     tomap({
+#       "Name" = var.app_instance_name
+#     })
+#   )
+# }
 
-resource "null_resource" "runningdinner-appserver-ip-log" {
-  triggers = {
-    value = aws_eip.runningdinner-appserver-ip.public_ip
-  }
-  depends_on = [aws_eip.runningdinner-appserver-ip]
-  provisioner "local-exec" {
-    command = <<EOF
-      echo ${aws_eip.runningdinner-appserver-ip.public_ip} > .appserver-ip-${var.stage}.txt
-    EOF
-  }
-}
+# resource "null_resource" "runningdinner-appserver-ip-log" {
+#   triggers = {
+#     value = aws_eip.runningdinner-appserver-ip.public_ip
+#   }
+#   depends_on = [aws_eip.runningdinner-appserver-ip]
+#   provisioner "local-exec" {
+#     command = <<EOF
+#       echo ${aws_eip.runningdinner-appserver-ip.public_ip} > .appserver-ip-${var.stage}.txt
+#     EOF
+#   }
+# }
