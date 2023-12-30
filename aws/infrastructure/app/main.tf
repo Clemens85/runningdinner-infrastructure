@@ -18,6 +18,7 @@ locals {
   common_tags = tomap({
     "service" = "runningdinner-v2"
     "component" = "app"
+    "stage" = var.stage
   })
 }
 
