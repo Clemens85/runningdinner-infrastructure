@@ -116,25 +116,14 @@ EOF
   )
 }
 
-resource "aws_eip" "runningdinner-appserver-ip" {
-  instance = aws_instance.runningdinner-appserver.id
-  vpc      = true
-  tags = merge(
-    local.common_tags,
-    tomap({
-      "Name" = var.app_instance_name
-    })
-  )
-}
-
 resource "null_resource" "runningdinner-appserver-ip-log" {
   triggers = {
-    value = aws_eip.runningdinner-appserver-ip.public_ip
+    value = aws_instance.runningdinner-appserver.public_dns
   }
-  depends_on = [aws_eip.runningdinner-appserver-ip]
+  depends_on = [aws_instance.runningdinner-appserver]
   provisioner "local-exec" {
     command = <<EOF
-      echo ${aws_eip.runningdinner-appserver-ip.public_ip} > .appserver-ip-${var.stage}.txt
+      echo ${aws_instance.runningdinner-appserver.public_dns} > .appserver-ip-${var.stage}.txt
     EOF
   }
 }
