@@ -88,6 +88,9 @@ Following Parameter Store entries must exist (as secrets) in each account:
 * /runningdinner/dockerhub/credentials
 * /runningdinner/logzio/token
 * /runningdinner/googlemaps/apikey
+* /runningdinner/paypal/baseurl
+* /runningdinner/paypal/clientid
+* /runningdinner/paypal/secret
 
 Use `./aws/scripts/create-ssm-paraemter.sh` respectively `./aws/scripts/create-dockerhub-credentials.sh` scripts.  
 
