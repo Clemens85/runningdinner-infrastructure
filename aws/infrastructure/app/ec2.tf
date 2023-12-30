@@ -76,6 +76,7 @@ resource "aws_instance" "runningdinner-appserver" {
   vpc_security_group_ids = [data.aws_security_group.runningdinner-app-traffic.id]
   subnet_id = data.aws_subnets.runningdinner-app-subnets.ids[0]
   iam_instance_profile = aws_iam_instance_profile.app-instance-role-profile.name
+  ipv6_address_count = 1
 
   # Switch EBS volume to gp3 instaed of gp2 (which is a little cheaper)...
   # Default size of 30 Gib can unfortunately not be adapted due to AMI restrictions
@@ -115,7 +116,6 @@ EOF
     })
   )
 }
-
 resource "null_resource" "runningdinner-appserver-ip-log" {
   triggers = {
     value = aws_instance.runningdinner-appserver.public_dns
