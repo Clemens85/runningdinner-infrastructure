@@ -20,3 +20,4 @@ local/.env
 .db-address*.txt
 backup.dump
 dump.dump
+/aws/scripts/create-dev-paypal-secrets.sh

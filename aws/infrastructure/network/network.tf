@@ -10,6 +10,7 @@ resource "aws_vpc" "runningdinner-vpc" {
   cidr_block = "20.0.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support = true
+  assign_generated_ipv6_cidr_block = true
   tags = merge(
     local.common_tags,
     tomap({
@@ -23,6 +24,7 @@ resource "aws_subnet" "runningdinner-app-subnet" {
   vpc_id            = aws_vpc.runningdinner-vpc.id
   availability_zone = element(var.az, count.index)
   cidr_block        = "20.0.${count.index + 8}.0/24"
+  ipv6_cidr_block = cidrsubnet(aws_vpc.runningdinner-vpc.ipv6_cidr_block, 8, count.index)
   map_public_ip_on_launch = true
   tags = merge(
     local.common_tags,
@@ -66,6 +68,10 @@ resource "aws_route_table" "runningdinner-route-table" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.runningdinner-internet-gateway.id
   }
+  route {
+    ipv6_cidr_block = "::/0"
+    gateway_id = aws_internet_gateway.runningdinner-internet-gateway.id
+  }
   tags = merge(
     local.common_tags,
     tomap({
@@ -92,7 +98,6 @@ resource "aws_internet_gateway" "runningdinner-internet-gateway" {
   )
 }
 
-// *** Create Security Group for EC2 which allows HTTP(S) traffic and SSH access for my IP *** //
 data "http" "myip" {
   url = "https://api.ipify.org/"
 }
@@ -105,6 +110,12 @@ resource "aws_security_group" "runningdinner-app-traffic" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    ipv6_cidr_blocks = ["::/0"]
   }
   tags = merge(
     local.common_tags,
@@ -121,6 +132,7 @@ resource "aws_security_group_rule" "runningdinner-app-traffic-https" {
   protocol          = "tcp"
   security_group_id = aws_security_group.runningdinner-app-traffic.id
   cidr_blocks       = ["0.0.0.0/0"]
+  ipv6_cidr_blocks = ["::/0"]
 }
 resource "aws_security_group_rule" "runningdinner-app-traffic-http" {
   type              = "ingress"
@@ -129,6 +141,7 @@ resource "aws_security_group_rule" "runningdinner-app-traffic-http" {
   protocol          = "tcp"
   security_group_id = aws_security_group.runningdinner-app-traffic.id
   cidr_blocks       = ["0.0.0.0/0"]
+  ipv6_cidr_blocks = ["::/0"]
 }
 resource "aws_security_group_rule" "runningdinner-app-traffic-ssh" {
   type              = "ingress"
