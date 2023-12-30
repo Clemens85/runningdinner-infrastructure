@@ -1,0 +1,62 @@
+resource "aws_cloudwatch_metric_alarm" "estimated_charges_alarm" {
+  alarm_name          = "Estimated Charges Alarm"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "EstimatedCharges"
+  namespace           = "AWS/Billing"
+  period              = "120"
+  statistic           = "Maximum"
+  threshold           = "40"
+  unit                = "USD"
+
+  # Set up SNS notification for alarm actions
+  alarm_actions = [
+    aws_sns_topic.notify_me.arn,
+  ]
+}
+
+resource "aws_sns_topic" "notify_me" {
+  name = "example-topic"
+}
+
+resource "aws_sns_topic_subscription" "notify_me" {
+  topic_arn = aws_sns_topic.notify_me.arn
+  protocol  = "email"
+  endpoint  = "runyourdinner@gmail.com"
+}
+
+resource "aws_budgets_budget" "lambda_invocations_budget" {
+  name = "Lambda Invocations Budget"
+  budget_type = "USAGE"
+
+  # Set the budget amount and threshold for alerting
+  budget_amount = 100000
+  threshold = 80
+
+  # Set up email notifications for budget alerts
+  notifications {
+    notification_type = "ACTUAL"
+    threshold_percent = 100
+    comparison_operator = "GREATER_THAN"
+    subscribers = [
+      "example@example.com"
+    ]
+  }
+
+  # Set the time period for the budget to apply (e.g. monthly, quarterly, or annually)
+  time_unit = "MONTHLY"
+  time_period_start = "2023-05-01"
+
+  limit_amount = ""
+  limit_unit = ""
+
+  # Use a cost filter to track all Lambda invocations for the AWS account
+#  cost_filter {
+#    name   = ""
+#    values = []
+#  }
+  cost_filters = {
+    "UsageType" = "Lambda-GB-Second"
+    "Service"   = "AWSLambda"
+  }
+}
