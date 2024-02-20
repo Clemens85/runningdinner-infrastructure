@@ -54,6 +54,13 @@ resource "aws_iam_role_policy" "app-instance-role-policy" {
         {
             "Effect": "Allow",
             "Action": [
+              "sns:*"
+            ],
+            "Resource": ["*"]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
               "s3:*"
             ],
             "Resource": ["*"]
