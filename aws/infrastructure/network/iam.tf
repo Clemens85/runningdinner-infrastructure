@@ -54,7 +54,7 @@ resource "aws_iam_role_policy" "app-instance-role-policy" {
         {
             "Effect": "Allow",
             "Action": [
-              "sns:*"
+              "sns:Publish"
             ],
             "Resource": ["*"]
         },
