@@ -18,10 +18,15 @@ provider "aws" {
   }
 }
 
-
 terraform {
   backend "s3" {
     key = "services/dns_v2.tfstate"
+  }
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">=5.0, !=5.39"
+    }
   }
 }
 
