@@ -34,6 +34,12 @@ data "aws_ami" "ecs" {
       "hvm"]
   }
 
+  filter {
+    name = "architecture"  # Add this filter to specify x86_64 architecture
+    values = [
+      "x86_64"]
+  }
+
   owners = [
     "amazon" # Only official images
   ]
