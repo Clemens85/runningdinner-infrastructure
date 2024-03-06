@@ -15,6 +15,7 @@ RUN apt-get -y update && apt-get -y upgrade
 RUN apt-get -y install curl unzip ssh apt-transport-https gnupg software-properties-common jq sudo groff
 RUN apt-get -y install less
 RUN apt-get -y install gcc python3 python3-pip rsync
+RUN apt-get -y install git
 
 RUN apt-get -y install postgresql-client
 
