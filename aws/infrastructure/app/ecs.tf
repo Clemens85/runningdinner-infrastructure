@@ -1,3 +1,10 @@
+resource "aws_ssm_parameter" "host-context-url" {
+  type = "String"
+  name = "/runningdinner/host/context/url"
+  tags = local.common_tags
+  value = "https://${var.domain_name}"
+}
+
 resource "aws_ecs_cluster" "runningdinner" {
   name = "runningdinner-ecs-cluster"
   tags = local.common_tags
@@ -26,7 +33,7 @@ resource "aws_ecs_task_definition" "runningdinner" {
   }
   task_role_arn            = data.aws_iam_role.app-instance-role.arn
   tags = local.common_tags
-  depends_on = [ aws_instance.runningdinner-appserver ]
+  depends_on = [ aws_instance.runningdinner-appserver, aws_ssm_parameter.host-context-url ]
 
   # Uncomment this for not updating ECS service
 #  lifecycle {
