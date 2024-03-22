@@ -28,6 +28,14 @@ resource "aws_route53_record" "sendgrid-s2-domainkey" {
   ttl = 300
 }
 
+resource "aws_route53_record" "sendgrid-dmarc" {
+  name = "_dmarc.runyourdinner.eu"
+  type = "TXT"
+  zone_id = aws_route53_zone.runningdinner.id
+  records = ["v=DMARC1; p=none;"]
+  ttl = 300
+}
+
 resource "aws_route53_record" "sendgrid-mail" {
   name = "mail.runyourdinner.eu"
   type = "CNAME"

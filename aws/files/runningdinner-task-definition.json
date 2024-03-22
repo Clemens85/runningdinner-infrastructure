@@ -67,6 +67,10 @@
       {
         "name": "PAYPAL_SECRET",
         "valueFrom": "/runningdinner/paypal/secret"
+      },
+      {
+        "name": "HOST_CONTEXT_URL",
+        "valueFrom": "/runningdinner/host/context/url"
       }
     ],
     "mountPoints": [

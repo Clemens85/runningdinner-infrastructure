@@ -34,6 +34,9 @@ variable "app_instance_role_name" {
 variable "webapp_bucket_name" {
 }
 
+variable "domain_name" {
+}
+
 variable "force_backend_deployment" {
   type = bool
   default = false
