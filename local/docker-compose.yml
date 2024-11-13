@@ -27,6 +27,12 @@ services:
     environment:
       - POSTGRES_PASSWORD=root
 
+  mailCatcher:
+    image: dockage/mailcatcher:0.7.1
+    ports:
+      - 1080:1080
+      - 1025:1025
+
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
     image: localstack/localstack
