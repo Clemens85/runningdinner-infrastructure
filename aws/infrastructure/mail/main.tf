@@ -26,3 +26,7 @@ terraform {
     }
   }
 }
+
+data "aws_route53_zone" "runningdinner" {
+  name = "${var.domain_name}."
+}
