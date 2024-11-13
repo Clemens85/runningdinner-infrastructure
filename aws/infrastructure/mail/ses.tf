@@ -79,6 +79,16 @@ resource  "aws_iam_policy" "ses_user_policy" {
         "Effect": "Allow",
         "Action": "ses:SendRawEmail",
         "Resource": "*"
+      },
+      {
+        "Effect": "Allow",
+        "Action": "ses:SendEmail",
+        "Resource": "*"
+      },
+      {
+        "Effect": "Allow",
+        "Action": "ses:GetSendStatistics",
+        "Resource": "*"
       }
     ]
 }
@@ -99,5 +109,5 @@ resource "aws_ssm_parameter" "ses_user_smtp_username" {
 resource "aws_ssm_parameter" "ses_user_smtp_password" {
   type = "SecureString"
   name = "/runningdinner/ses/smtp/password"
-  value = aws_iam_access_key.ses_user.ses_smtp_password_v4
+  value = aws_iam_access_key.ses_user.secret
 }
