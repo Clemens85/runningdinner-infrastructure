@@ -1,7 +1,3 @@
-data "aws_route53_zone" "runningdinner" {
-  name = "${var.domain_name}."
-}
-
 resource "aws_ses_configuration_set" "runningdinner" {
   name = "runyourdinner"
   reputation_metrics_enabled = true
