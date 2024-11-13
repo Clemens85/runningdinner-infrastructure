@@ -71,6 +71,10 @@
       {
         "name": "HOST_CONTEXT_URL",
         "valueFrom": "/runningdinner/host/context/url"
+      },
+      {
+        "name": "SENDGRID_API_KEY",
+        "valueFrom": "/runningdinner/sendgrid/apikey"
       }
     ],
     "mountPoints": [
