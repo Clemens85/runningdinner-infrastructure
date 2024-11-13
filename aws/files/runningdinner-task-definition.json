@@ -75,6 +75,13 @@
       {
         "name": "SENDGRID_API_KEY",
         "valueFrom": "/runningdinner/sendgrid/apikey"
+      },
+      {
+        "name": "MAIL_SMTP_USERNAME",
+        "valueFrom": "/runningdinner/ses/smtp/username"
+      },      {
+        "name": "MAIL_SMTP_PASSWORD",
+        "valueFrom": "/runningdinner/ses/smtp/password"
       }
     ],
     "mountPoints": [

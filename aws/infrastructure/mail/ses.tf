@@ -9,6 +9,7 @@ resource "aws_ses_configuration_set" "runningdinner" {
 
 resource "aws_ses_domain_identity" "runningdinner" {
   domain = "mailing.${var.domain_name}"
+
 }
 
 resource "aws_route53_record" "runningdinner_amazonses_verification_record" {
@@ -61,4 +62,46 @@ resource "aws_route53_record" "example_ses_domain_mail_from_txt" {
   type    = "TXT"
   ttl     = "600"
   records = ["v=spf1 include:amazonses.com ~all"]
+}
+
+# SMTP User
+resource "aws_iam_user" "ses_user" {
+  name = "ses-smtp-user"
+}
+
+resource "aws_iam_access_key" "ses_user" {
+  user = aws_iam_user.ses_user.name
+}
+
+resource  "aws_iam_policy" "ses_user_policy" {
+  name = "ses-smtp-user-policy"
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": "ses:SendRawEmail",
+        "Resource": "*"
+      }
+    ]
+}
+  POLICY
+}
+
+resource "aws_iam_user_policy_attachment" "ses_user_policy_attachment" {
+  user = aws_iam_user.ses_user.name
+  policy_arn = aws_iam_policy.ses_user_policy.arn
+}
+
+resource "aws_ssm_parameter" "ses_user_smtp_username" {
+  type = "SecureString"
+  name = "/runningdinner/ses/smtp/username"
+  value = aws_iam_access_key.ses_user.id
+}
+
+resource "aws_ssm_parameter" "ses_user_smtp_password" {
+  type = "SecureString"
+  name = "/runningdinner/ses/smtp/password"
+  value = aws_iam_access_key.ses_user.ses_smtp_password_v4
 }

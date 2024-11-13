@@ -5,6 +5,14 @@ provider "aws" {
     role_arn     = "arn:aws:iam::${var.aws_account_id}:role/terraform-${var.stage}"
     session_name = "terraform-mail"
   }
+
+  default_tags {
+    tags = {
+      service = "runningdinner-v2"
+      component = "mail"
+      stage = var.stage
+    }
+  }
 }
 
 terraform {
