@@ -19,6 +19,11 @@ resource "aws_vpc" "runningdinner-vpc" {
   )
 }
 
+# disable all inbound / outbound rules for default sg of VPC
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.runningdinner-vpc.id
+}
+
 resource "aws_subnet" "runningdinner-app-subnet" {
   count             = length(var.az)
   vpc_id            = aws_vpc.runningdinner-vpc.id
@@ -131,6 +136,7 @@ resource "aws_security_group_rule" "runningdinner-app-traffic-https" {
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
+  description       = "Enable HTTPS traffic for App"
   security_group_id = aws_security_group.runningdinner-app-traffic.id
   cidr_blocks       = ["0.0.0.0/0"]
   ipv6_cidr_blocks = ["::/0"]
@@ -139,6 +145,7 @@ resource "aws_security_group_rule" "runningdinner-app-traffic-http" {
   type              = "ingress"
   from_port         = 80
   to_port           = 80
+  description       = "Enable HTTP traffic for App"
   protocol          = "tcp"
   security_group_id = aws_security_group.runningdinner-app-traffic.id
   cidr_blocks       = ["0.0.0.0/0"]
@@ -148,6 +155,7 @@ resource "aws_security_group_rule" "runningdinner-app-traffic-ssh" {
   type              = "ingress"
   from_port         = 22
   to_port           = 22
+  description       = "Allow SSH from IP Address"
   protocol          = "tcp"
   security_group_id = aws_security_group.runningdinner-app-traffic.id
   cidr_blocks       = ["${chomp(data.http.myip.response_body)}/32"]
@@ -172,6 +180,7 @@ resource "aws_security_group_rule" "runningdinner-db-app" {
   from_port         = 5432
   to_port           = 5432
   protocol          = "tcp"
+  description       = "Enable traffic from App to Database"
   source_security_group_id = aws_security_group.runningdinner-app-traffic.id
   security_group_id = aws_security_group.runningdinner-db-app.id
 }

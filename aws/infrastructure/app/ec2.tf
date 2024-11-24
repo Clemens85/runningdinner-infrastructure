@@ -84,6 +84,11 @@ resource "aws_instance" "runningdinner-appserver" {
   iam_instance_profile = aws_iam_instance_profile.app-instance-role-profile.name
   ipv6_address_count = 1
 
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
+
   # Switch EBS volume to gp3 instaed of gp2 (which is a little cheaper)...
   # Default size of 30 Gib can unfortunately not be adapted due to AMI restrictions
   root_block_device {

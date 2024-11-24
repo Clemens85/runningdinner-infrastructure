@@ -7,6 +7,10 @@ resource "aws_ssm_parameter" "host-context-url" {
 
 resource "aws_ecs_cluster" "runningdinner" {
   name = "runningdinner-ecs-cluster"
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
   tags = local.common_tags
 }
 

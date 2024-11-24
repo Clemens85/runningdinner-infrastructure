@@ -54,6 +54,8 @@ data "aws_cloudfront_cache_policy" "caching-optimized" {
 resource "aws_cloudfront_distribution" "runningdinner" {
   enabled = true
 
+  default_root_object = "index.html"
+
   logging_config {
     bucket = aws_s3_bucket.webapp-access-logs.bucket_domain_name
     prefix = "logs/"
@@ -167,6 +169,7 @@ resource "aws_s3_bucket_ownership_controls" "webapp-access-logs" {
   bucket = aws_s3_bucket.webapp-access-logs.id
   rule {
     object_ownership = "ObjectWriter"
+    # object_ownership = "BucketOwnerEnforced"
   }
 }
 
