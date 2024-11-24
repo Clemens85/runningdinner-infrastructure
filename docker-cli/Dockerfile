@@ -37,6 +37,8 @@ RUN unzip awscliv2.zip
 RUN ./aws/install
 RUN rm awscliv2.zip
 
+RUN pip3 install checkov
+
 RUN useradd --shell /bin/bash --groups sudo --create-home tf_user
 RUN echo "%sudo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN touch /home/tf_user/.sudo_as_admin_successful
