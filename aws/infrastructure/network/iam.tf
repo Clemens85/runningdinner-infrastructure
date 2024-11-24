@@ -83,10 +83,6 @@ resource "aws_iam_role_policy_attachment" "ecs-image-pull-policy-attachment" {
   role = aws_iam_role.app-instance-role.name
 }
 
-# resource "aws_iam_user" "ci_user" {
-#   name = "ci_user"
-# }
-
 resource  "aws_iam_policy" "ci-user-policy" {
   name = "ci-user-policy"
   policy = <<POLICY
@@ -205,8 +201,3 @@ resource  "aws_iam_policy" "ci-user-policy" {
 }
   POLICY
 }
-
-# resource "aws_iam_user_policy_attachment" "ci-user-policy_attachment" {
-#   user = aws_iam_user.ci_user.name
-#   policy_arn = aws_iam_policy.ci-user-policy.arn
-# }
