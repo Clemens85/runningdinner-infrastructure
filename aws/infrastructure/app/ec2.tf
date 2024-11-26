@@ -102,7 +102,7 @@ echo "ECS_CLUSTER=${aws_ecs_cluster.runningdinner.name}" >> /etc/ecs/ecs.config
 echo "ECS_ENGINE_AUTH_TYPE=docker" >> /etc/ecs/ecs.config
 DOCKERHUB_CREDS='${data.aws_ssm_parameter.dockerhub-credentials.value}'
 echo "ECS_ENGINE_AUTH_DATA=$DOCKERHUB_CREDS" >> /etc/ecs/ecs.config
-
+sudo systemctl restart docker
 sudo yum -y install nano
 
 # *** Logz.io Config ***
