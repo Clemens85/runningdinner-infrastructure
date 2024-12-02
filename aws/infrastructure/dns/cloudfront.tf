@@ -18,8 +18,17 @@ data "aws_iam_policy_document" "webapp" {
   statement {
     sid = "AllowCloudFrontAccessToBucket"
 
-    actions = ["s3:*"]
-    resources = ["${data.aws_s3_bucket.webapp.arn}/*"]
+    actions = [
+      "s3:GetObject",
+      "s3:ListBucket",
+      "s3:GetBucketLocation",
+      "s3:GetObjectVersion",
+      "s3:GetObjectAcl"
+    ]
+    resources = [
+      "${data.aws_s3_bucket.webapp.arn}",
+      "${data.aws_s3_bucket.webapp.arn}/*"
+    ]
 
     principals {
       type        = "Service"
