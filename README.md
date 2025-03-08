@@ -1,5 +1,9 @@
 # Initial Setup for AWS (Prerequisites)
 
+## Reference
+
+See also https://ruan.dev/blog/2024/09/15/cross-account-terraform-assume-roles-in-aws
+
 ## AWS Accounts
 * AWS root account with organizations setup
 * Child account for dev stage
@@ -76,6 +80,35 @@ See also https://medium.com/@aw.panda.aws/4-steps-to-deploy-to-multiple-aws-acco
 In each child account (stage) a S3 bucket must be created for the Terraform backend.
 It must match the configuration in `./aws/config/config.sh`
 
+Attach bucket permission policy:
+```json
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Principal": {
+				"AWS": "arn:aws:iam::CHILD_ACCOUNT_ID:role/terraform-STAGE"
+			},
+			"Action": "s3:ListBucket",
+			"Resource": "arn:aws:s3:::runningdinner-tf-backend-STAGE"
+		},
+		{
+			"Effect": "Allow",
+			"Principal": {
+				"AWS": "arn:aws:iam::CHILD_ACCOUNT_ID:role/terraform-STAGE"
+			},
+			"Action": [
+				"s3:GetObject",
+				"s3:PutObject",
+				"s3:DeleteObject"
+			],
+			"Resource": "arn:aws:s3:::runningdinner-tf-backend-STAGE/*"
+		}
+	]
+}
+```
+
 ## Local AWS credentials
 
 The ~/.aws/credentials must contain both a profile runningdinner-dev and runningdinner-prod whith tokens
@@ -100,3 +133,11 @@ If CircleCI not available:
 
 * Backend: `./aws/scripts/deploy-ecs-task.sh <STAGE>` (deploys latest tag)
 * Frontend: `./aws/scripts/deploy-s3-content.sh <STAGE> runningdinner-web-<STAGE>`
+
+## Order of modules being deployed
+
+1. network
+2. database
+3. app
+4. dns
+5. mail
