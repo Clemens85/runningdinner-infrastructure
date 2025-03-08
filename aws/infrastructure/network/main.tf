@@ -11,10 +11,4 @@ terraform {
   backend "s3" {
     key = "services/iam_v2.tfstate"
   }
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">=5.77.0"
-    }
-  }
 }

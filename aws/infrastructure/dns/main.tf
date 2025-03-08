@@ -22,12 +22,6 @@ terraform {
   backend "s3" {
     key = "services/dns_v2.tfstate"
   }
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">=5.77.0"
-    }
-  }
 }
 
 # See https://github.com/hashicorp/terraform/issues/2283

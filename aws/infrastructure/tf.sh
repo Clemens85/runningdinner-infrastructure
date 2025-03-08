@@ -85,10 +85,11 @@ elif [[ " ${subCommandsWithBackend[@]} " =~ ${TF_COMMAND} ]]; then
   echo "Running in $(pwd): terraform init ${@:4} with remote backend in $TF_BACKEND_BUCKET for stage $STAGE with role $TF_VAR_assume_role_arn"
   terraform init \
            -reconfigure \
+           -backend-config "region=$TF_VAR_region" \
+           -backend-config "bucket=$TF_BACKEND_BUCKET" \
+           -backend-config "assume_role={role_arn=\"${TF_VAR_assume_role_arn}\"}" \
+           -backend-config "profile=$TF_VAR_aws_profile" \
            -upgrade \
-           -backend-config="bucket=$TF_BACKEND_BUCKET" \
-           -backend-config="region=$TF_VAR_region" \
-           -backend-config="role_arn=$TF_VAR_assume_role_arn"
            "${@:4}"
    writeCurrentTerraformContext "$STAGE" "$TF_CONFIG_DIR"
 else
