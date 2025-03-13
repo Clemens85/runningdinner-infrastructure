@@ -16,16 +16,29 @@ services:
     extra_hosts:
       - "runningdinner-backend:${DOCKER_HOST_IP}"
 
+
   postgres:
-    image: postgres:13.4-alpine
-    container_name: postgres13
+    image: postgres:17-alpine
+    container_name: postgres17
     ports:
       - "5432:5432"
     volumes:
-      - postgres-data-13:/var/lib/postgresql/data
+      - postgres-data-17:/var/lib/postgresql/data
       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     environment:
       - POSTGRES_PASSWORD=root
+
+
+#  postgres:
+#    image: postgres:13.4-alpine
+#    container_name: postgres13
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - postgres-data-13:/var/lib/postgresql/data
+#      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+#    environment:
+#      - POSTGRES_PASSWORD=root
 
   mailCatcher:
     image: dockage/mailcatcher:0.7.1
@@ -57,4 +70,5 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
 
 volumes:
-  postgres-data-13:
+  postgres-data-17:
+#  postgres-data-13:
