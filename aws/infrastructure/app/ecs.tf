@@ -9,7 +9,7 @@ resource "aws_ecs_cluster" "runningdinner" {
   name = "runningdinner-ecs-cluster"
   setting {
     name  = "containerInsights"
-    value = "enabled"
+    value = "disabled"
   }
   tags = local.common_tags
 }
