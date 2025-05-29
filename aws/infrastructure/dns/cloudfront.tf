@@ -210,6 +210,7 @@ resource "aws_s3_bucket_acl" "webapp-access-logs" {
 
 resource "aws_s3_bucket_lifecycle_configuration" "webapp-access-logs" {
   bucket = aws_s3_bucket.webapp-access-logs.id
+
   rule {
     id     = "Expire7Days"
     status = "Enabled"

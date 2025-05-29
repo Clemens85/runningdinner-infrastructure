@@ -7,7 +7,9 @@
       "options": {
         "awslogs-group": "runningdinner-backend",
         "awslogs-region": "${AWS_REGION}",
-        "awslogs-stream-prefix": "ecs"
+        "awslogs-stream-prefix": "ecs",
+        "mode": "non-blocking",
+        "max-buffer-size": "25m"
       }
     },
     "links": [],
@@ -49,12 +51,12 @@
         "valueFrom": "/runningdinner/database/password/admin"
       },
       {
-        "name": "AWS_SQS_GEOCODE_URL",
-        "valueFrom": "/runningdinner/geocode-participant/sqs/url"
+        "name": "AWS_SQS_GEOCODE_REQUEST_URL",
+        "valueFrom": "/runningdinner/geocode-request/sqs/url"
       },
       {
-        "name": "AWS_SQS_AFTERPARTYLOCATION_URL",
-        "valueFrom": "/runningdinner/geocode-participant/sqs/url"
+        "name": "AWS_SQS_GEOCODE_RESPONSE_URL",
+        "valueFrom": "/runningdinner/geocode-response/sqs/url"
       },
       {
         "name": "PAYPAL_BASEURL",
@@ -79,18 +81,19 @@
       {
         "name": "MAIL_SMTP_USERNAME",
         "valueFrom": "/runningdinner/ses/smtp/username"
-      },      {
+      },
+      {
         "name": "MAIL_SMTP_PASSWORD",
         "valueFrom": "/runningdinner/ses/smtp/password"
       },
       {
         "name": "MAILJET_API_KEY_PUBLIC",
         "valueFrom": "/runningdinner/mailjet/username"
-      },      {
+      },
+      {
         "name": "MAILJET_API_KEY_PRIVATE",
         "valueFrom": "/runningdinner/mailjet/password"
       }
-
     ],
     "mountPoints": [
       {
@@ -101,7 +104,7 @@
     "memory": 850,
     "volumesFrom": [],
     "healthCheck": {
-      "command": [ "CMD-SHELL", "wget -qO- http://localhost/health || exit 1" ],
+      "command": ["CMD-SHELL", "wget -qO- http://localhost/health || exit 1"],
       "startPeriod": 60,
       "interval": 60
     }

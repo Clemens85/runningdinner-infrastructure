@@ -25,11 +25,11 @@ resource "aws_s3_bucket_public_access_block" "webapp" {
 }
 
 
-resource "aws_s3_bucket_acl" "webapp" {
-  bucket = aws_s3_bucket.webapp.id
-  acl = "private"
-  depends_on = [ aws_s3_bucket_ownership_controls.webapp, aws_s3_bucket_public_access_block.webapp ]
-}
+# resource "aws_s3_bucket_acl" "webapp" {
+#   bucket = aws_s3_bucket.webapp.id
+#   acl = "private"
+#   depends_on = [ aws_s3_bucket_ownership_controls.webapp, aws_s3_bucket_public_access_block.webapp ]
+# }
 
 resource "aws_s3_bucket_ownership_controls" "webapp" {
   bucket = aws_s3_bucket.webapp.id
