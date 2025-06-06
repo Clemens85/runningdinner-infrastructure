@@ -59,6 +59,10 @@
         "valueFrom": "/runningdinner/geocode-response/sqs/url"
       },
       {
+        "name": "AWS_HTTP_GEOCODE_REQUEST_URL",
+        "valueFrom": "/runningdinner/geocode-http-function/url"
+      },
+      {
         "name": "PAYPAL_BASEURL",
         "valueFrom": "/runningdinner/paypal/baseurl"
       },
