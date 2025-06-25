@@ -132,7 +132,7 @@ resource "aws_sns_topic" "ses_notifications" {
 resource "aws_sns_topic_subscription" "ses_notifications_webhook" {
   topic_arn = aws_sns_topic.ses_notifications.arn
   protocol  = "https"
-  endpoint  = "https://runyourdinner.eu/rest/ses/notifications"
+  endpoint  = "https://${var.domain_name}/rest/ses/notifications"
 }
 
 resource "aws_ses_event_destination" "ses_event_destination" {
