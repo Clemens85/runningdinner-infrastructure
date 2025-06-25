@@ -18,3 +18,5 @@ Following entries should be removed after deployment of mail-pool branch
         "valueFrom": "/runningdinner/mailjet/password"
       }
 ```
+
+Furthermore all SendGrid Entries after complete removal
