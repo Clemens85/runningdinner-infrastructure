@@ -97,6 +97,22 @@
       {
         "name": "MAILJET_API_KEY_PRIVATE",
         "valueFrom": "/runningdinner/mailjet/password"
+      },
+      {
+        "name": "MAIL_AWSSES_USERNAME",
+        "valueFrom": "/runningdinner/ses/smtp/username"
+      },
+      {
+        "name": "MAIL_AWSSES_PASSWORD",
+        "valueFrom": "/runningdinner/ses/smtp/password"
+      },
+      {
+        "name": "MAIL_MAILJET_KEY_PUBLIC",
+        "valueFrom": "/runningdinner/mailjet/username"
+      },
+      {
+        "name": "MAIL_MAILJET_KEY_PRIVATE",
+        "valueFrom": "/runningdinner/mailjet/password"
       }
     ],
     "mountPoints": [
