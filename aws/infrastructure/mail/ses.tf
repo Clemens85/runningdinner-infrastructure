@@ -111,3 +111,45 @@ resource "aws_ssm_parameter" "ses_user_smtp_password" {
   name = "/runningdinner/ses/smtp/password"
   value = aws_iam_access_key.ses_user.secret
 }
+
+# SNS Topic for SES Notifications
+
+resource "aws_sns_topic" "ses_notifications" {
+  name = "ses-notifications"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = { Service = "ses.amazonaws.com" }
+        Action = "SNS:Publish"
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_sns_topic_subscription" "ses_notifications_webhook" {
+  topic_arn = aws_sns_topic.ses_notifications.arn
+  protocol  = "https"
+  endpoint  = "https://runyourdinner.eu/rest/ses/notifications"
+}
+
+resource "aws_ses_event_destination" "ses_event_destination" {
+  name                   = "ses-sns-event-destination"
+  configuration_set_name = aws_ses_configuration_set.runningdinner.name
+  enabled                = true
+
+  sns_destination {
+    topic_arn = aws_sns_topic.ses_notifications.arn
+  }
+
+  matching_types = [
+    "reject",
+    "bounce",
+    "complaint",
+    "delivery",
+  ]
+
+  depends_on = [aws_sns_topic.ses_notifications]
+}
