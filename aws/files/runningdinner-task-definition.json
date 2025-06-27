@@ -121,6 +121,10 @@
       {
         "name": "MAIL_MAILJET_KEY_PRIVATE",
         "valueFrom": "/runningdinner/mailjet/password"
+      },
+      {
+        "name": "MAIL_WEBHOOK_TOKEN",
+        "valueFrom": "/runningdinner/mail/webhook/secret"
       }
     ],
     "mountPoints": [
