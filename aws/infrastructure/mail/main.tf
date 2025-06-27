@@ -24,3 +24,7 @@ terraform {
 data "aws_route53_zone" "runningdinner" {
   name = "${var.domain_name}."
 }
+
+data "aws_ssm_parameter" "mail-webhook-secret" {
+  name = "/runningdinner/mail/webhook/secret"
+}

@@ -132,7 +132,7 @@ resource "aws_sns_topic" "ses_notifications" {
 resource "aws_sns_topic_subscription" "ses_notifications_webhook" {
   topic_arn = aws_sns_topic.ses_notifications.arn
   protocol  = "https"
-  endpoint  = "https://${var.domain_name}/rest/ses/notifications"
+  endpoint  = "https://${var.domain_name}/rest/ses/notifications?webhookToken=${data.aws_ssm_parameter.mail-webhook-secret.value}"
 }
 
 resource "aws_ses_event_destination" "ses_event_destination" {
