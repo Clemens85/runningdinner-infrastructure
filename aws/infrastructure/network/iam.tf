@@ -3,6 +3,13 @@ data "aws_s3_bucket" "route-optimization-bucket" {
   bucket = var.route_optimization_bucket_name
 }
 
+resource "aws_ssm_parameter" "route-optimization-bucket" {
+  type = "String"
+  name = "/runningdinner/route-optimization/bucket"
+  tags = local.common_tags
+  value = var.route_optimization_bucket_name
+}
+
 resource "aws_iam_role" "app-instance-role" {
   name = var.app_instance_role_name
   tags = merge(

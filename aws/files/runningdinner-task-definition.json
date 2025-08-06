@@ -125,6 +125,10 @@
       {
         "name": "MAIL_WEBHOOK_TOKEN",
         "valueFrom": "/runningdinner/mail/webhook/secret"
+      },
+      {
+        "name": "AWS_S3_ROUTE_OPTIMIZATION_BUCKET",
+        "valueFrom": "/runningdinner/route-optimization/bucket"
       }
     ],
     "mountPoints": [
