@@ -22,3 +22,6 @@ variable "app_subnets_name" {
 }
 variable "app_instance_role_name" {
 }
+
+variable "route_optimization_bucket_name" {
+}

@@ -1,3 +1,8 @@
+# This requires the runningdinner-functions CDK to be deployed first !!!
+data "aws_s3_bucket" "route-optimization-bucket" {
+  bucket = var.route_optimization_bucket_name
+}
+
 resource "aws_iam_role" "app-instance-role" {
   name = var.app_instance_role_name
   tags = merge(
@@ -52,11 +57,16 @@ resource "aws_iam_role_policy" "app-instance-role-policy" {
             "Resource": ["*"]
         },
         {
-            "Effect": "Allow",
-            "Action": [
-              "s3:*"
-            ],
-            "Resource": ["*"]
+          "Effect": "Allow",
+          "Action": [
+            "s3:GetObject",
+            "s3:PutObject",
+            "s3:ListBucket"
+          ],
+          "Resource": [
+            "${data.aws_s3_bucket.route-optimization-bucket.arn}/*",
+            "${data.aws_s3_bucket.route-optimization-bucket.arn}"
+          ]
         },
         {
             "Effect": "Allow",

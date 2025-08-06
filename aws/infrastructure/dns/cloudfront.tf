@@ -70,12 +70,6 @@ resource "aws_cloudfront_distribution" "runningdinner" {
     prefix = "logs/"
   }
 
-#  custom_error_response {
-#    error_code = 404
-#    response_code = 200
-#    response_page_path = "/index.html"
-#  }
-
   default_cache_behavior {
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods         = ["HEAD", "GET"]
@@ -87,6 +81,22 @@ resource "aws_cloudfront_distribution" "runningdinner" {
       event_type   = "viewer-request"
       function_arn = aws_cloudfront_function.runningdinner.arn
     }
+  }
+
+  ordered_cache_behavior {
+    path_pattern     = "/sse/*"
+    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods   = ["HEAD", "GET"]
+    target_origin_id = "runningdinner-app"
+
+    compress = false
+
+    viewer_protocol_policy = "redirect-to-https"
+
+    smooth_streaming = false
+
+    cache_policy_id           = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad" # AWS CACHING_DISABLED (predefined cache policy)
+    origin_request_policy_id = aws_cloudfront_origin_request_policy.sse_origin_request_policy.id
   }
 
   ordered_cache_behavior {
@@ -127,17 +137,6 @@ resource "aws_cloudfront_distribution" "runningdinner" {
     }
   }
 
-#  origin {
-#    domain_name = data.aws_s3_bucket.webapp.website_endpoint
-#    origin_id   = "runningdinner-web"
-#    custom_origin_config {
-#      http_port              = 80
-#      https_port             = 443
-#      origin_protocol_policy = "http-only"
-#      origin_ssl_protocols   = ["TLSv1.2"]
-#    }
-#  }
-
   origin {
     domain_name = data.aws_s3_bucket.webapp.bucket_regional_domain_name
     origin_id   = "runningdinner-web"
@@ -156,6 +155,23 @@ resource "aws_cloudfront_distribution" "runningdinner" {
   }
 
   aliases = [var.domain_name]
+}
+
+
+resource "aws_cloudfront_origin_request_policy" "sse_origin_request_policy" {
+  name = "sse-origin-request-policy"
+  cookies_config {
+    cookie_behavior = "none"
+  }
+  headers_config {
+    header_behavior = "whitelist"
+    headers {
+      items = ["Origin", "Cache-Control", "Accept"]
+    }
+  }
+  query_strings_config {
+    query_string_behavior = "all"
+  }
 }
 
 resource "aws_cloudfront_function" "runningdinner" {
