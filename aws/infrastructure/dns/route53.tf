@@ -12,38 +12,6 @@ resource "aws_route53_record" "google-site-verification" {
   ttl = 300
 }
 
-resource "aws_route53_record" "sendgrid-s1-domainkey" {
-  name = "s1._domainkey.runyourdinner.eu"
-  type = "CNAME"
-  zone_id = aws_route53_zone.runningdinner.id
-  records = ["s1.domainkey.u3158000.wl001.sendgrid.net"]
-  ttl = 300
-}
-
-resource "aws_route53_record" "sendgrid-s2-domainkey" {
-  name = "s2._domainkey.runyourdinner.eu"
-  type = "CNAME"
-  zone_id = aws_route53_zone.runningdinner.id
-  records = ["s2.domainkey.u3158000.wl001.sendgrid.net"]
-  ttl = 300
-}
-
-resource "aws_route53_record" "sendgrid-dmarc" {
-  name = "_dmarc.runyourdinner.eu"
-  type = "TXT"
-  zone_id = aws_route53_zone.runningdinner.id
-  records = ["v=DMARC1; p=none;"]
-  ttl = 300
-}
-
-resource "aws_route53_record" "sendgrid-mail" {
-  name = "mail.runyourdinner.eu"
-  type = "CNAME"
-  zone_id = aws_route53_zone.runningdinner.id
-  records = ["u3158000.wl001.sendgrid.net"]
-  ttl = 300
-}
-
 resource "aws_acm_certificate" "runningdinner" {
   depends_on = [null_resource.add-nameservers-to-root-account]
   domain_name = var.domain_name

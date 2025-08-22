@@ -27,10 +27,6 @@
       {
         "name": "LOGGING_PATH",
         "value": "/logs"
-      },
-      {
-        "name": "MAIL_SENDGRID_API_ENABLED",
-        "value": "true"
       }
     ],
     "secrets": [
@@ -81,30 +77,6 @@
       {
         "name": "HOST_CONTEXT_URL",
         "valueFrom": "/runningdinner/host/context/url"
-      },
-      {
-        "name": "SENDGRID_API_KEY",
-        "valueFrom": "/runningdinner/sendgrid/apikey"
-      },
-      {
-        "name": "MAIL_SENDGRID_API_KEY",
-        "valueFrom": "/runningdinner/sendgrid/apikey"
-      },
-      {
-        "name": "MAIL_SMTP_USERNAME",
-        "valueFrom": "/runningdinner/ses/smtp/username"
-      },
-      {
-        "name": "MAIL_SMTP_PASSWORD",
-        "valueFrom": "/runningdinner/ses/smtp/password"
-      },
-      {
-        "name": "MAILJET_API_KEY_PUBLIC",
-        "valueFrom": "/runningdinner/mailjet/username"
-      },
-      {
-        "name": "MAILJET_API_KEY_PRIVATE",
-        "valueFrom": "/runningdinner/mailjet/password"
       },
       {
         "name": "MAIL_AWSSES_USERNAME",
