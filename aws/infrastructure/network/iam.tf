@@ -240,6 +240,16 @@ resource  "aws_iam_policy" "ci-user-policy" {
     {
       "Effect": "Allow",
       "Action": [
+          "dynamodb:CreateTable",
+          "dynamodb:DeleteTable",
+          "dynamodb:UpdateTable",
+          "dynamodb:DescribeTable",
+          "dynamodb:ListTables",
+          "dynamodb:DescribeTimeToLive",
+          "dynamodb:UpdateTimeToLive",
+          "dynamodb:TagResource",
+          "dynamodb:UntagResource",
+          "dynamodb:ListTagsOfResource",
           "dynamodb:GetItem",
           "dynamodb:PutItem",
           "dynamodb:UpdateItem",
@@ -247,13 +257,45 @@ resource  "aws_iam_policy" "ci-user-policy" {
           "dynamodb:Query",
           "dynamodb:Scan",
           "dynamodb:BatchGetItem",
-          "dynamodb:BatchWriteItem",
-          "dynamodb:DescribeTable"
+          "dynamodb:BatchWriteItem"
       ],
-      "Resource": [
-          "arn:aws:dynamodb:${var.region}:${var.aws_account_id}:table/runningdinner-v1",
-          "arn:aws:dynamodb:${var.region}:${var.aws_account_id}:table/runningdinner-v1/index/*"
-      ]
+      "Resource": ["*"]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "sns:CreateTopic",
+          "sns:DeleteTopic",
+          "sns:Subscribe",
+          "sns:Unsubscribe",
+          "sns:Publish",
+          "sns:ListTopics",
+          "sns:ListSubscriptions",
+          "sns:ListSubscriptionsByTopic",
+          "sns:GetTopicAttributes",
+          "sns:SetTopicAttributes",
+          "sns:TagResource",
+          "sns:UntagResource"
+      ],
+      "Resource": ["*"]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "sqs:CreateQueue",
+          "sqs:DeleteQueue",
+          "sqs:GetQueueAttributes",
+          "sqs:SetQueueAttributes",
+          "sqs:ListQueues",
+          "sqs:SendMessage",
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:PurgeQueue",
+          "sqs:TagQueue",
+          "sqs:UntagQueue",
+          "sqs:GetQueueUrl"
+      ],
+      "Resource": ["*"]
     }
   ]
 }
