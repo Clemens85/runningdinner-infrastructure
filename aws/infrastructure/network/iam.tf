@@ -236,6 +236,24 @@ resource  "aws_iam_policy" "ci-user-policy" {
           "cloudfront:ListInvalidations"
       ],
       "Resource": ["*"]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:Query",
+          "dynamodb:Scan",
+          "dynamodb:BatchGetItem",
+          "dynamodb:BatchWriteItem",
+          "dynamodb:DescribeTable"
+      ],
+      "Resource": [
+          "arn:aws:dynamodb:${var.region}:${var.aws_account_id}:table/runningdinner-v1",
+          "arn:aws:dynamodb:${var.region}:${var.aws_account_id}:table/runningdinner-v1/index/*"
+      ]
     }
   ]
 }
