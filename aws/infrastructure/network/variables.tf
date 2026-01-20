@@ -25,3 +25,5 @@ variable "app_instance_role_name" {
 
 variable "route_optimization_bucket_name" {
 }
+variable "message_proposal_bucket_name" {
+}

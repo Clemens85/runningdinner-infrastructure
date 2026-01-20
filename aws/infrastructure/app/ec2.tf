@@ -169,7 +169,7 @@ sudo systemctl start filebeat
 EOF
 
   lifecycle {
-    ignore_changes = [user_data, subnet_id, key_name, ebs_optimized, private_ip]
+    ignore_changes = [ami, user_data, subnet_id, key_name, ebs_optimized, private_ip]
   }
 
   depends_on = [ aws_ecs_cluster.runningdinner ]

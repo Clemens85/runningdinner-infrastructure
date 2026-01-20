@@ -101,6 +101,10 @@
       {
         "name": "AWS_S3_ROUTE_OPTIMIZATION_BUCKET",
         "valueFrom": "/runningdinner/route-optimization/bucket"
+      },
+      {
+        "name": "AWS_S3_MESSAGE_PROPOSAL_BUCKET",
+        "valueFrom": "/runningdinner/message-proposal/bucket"
       }
     ],
     "mountPoints": [

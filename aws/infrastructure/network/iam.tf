@@ -2,12 +2,23 @@
 data "aws_s3_bucket" "route-optimization-bucket" {
   bucket = var.route_optimization_bucket_name
 }
+# This requires the runningdinner-functions CDK to be deployed first !!!
+data "aws_s3_bucket" "message-proposal-bucket" {
+  bucket = var.message_proposal_bucket_name
+}
 
 resource "aws_ssm_parameter" "route-optimization-bucket" {
   type = "String"
   name = "/runningdinner/route-optimization/bucket"
   tags = local.common_tags
   value = var.route_optimization_bucket_name
+}
+
+resource "aws_ssm_parameter" "message-proposal-bucket" {
+  type = "String"
+  name = "/runningdinner/message-proposal/bucket"
+  tags = local.common_tags
+  value = var.message_proposal_bucket_name
 }
 
 resource "aws_iam_role" "app-instance-role" {
@@ -73,6 +84,18 @@ resource "aws_iam_role_policy" "app-instance-role-policy" {
           "Resource": [
             "${data.aws_s3_bucket.route-optimization-bucket.arn}/*",
             "${data.aws_s3_bucket.route-optimization-bucket.arn}"
+          ]
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "s3:GetObject",
+            "s3:PutObject",
+            "s3:ListBucket"
+          ],
+          "Resource": [
+            "${data.aws_s3_bucket.message-proposal-bucket.arn}/*",
+            "${data.aws_s3_bucket.message-proposal-bucket.arn}"
           ]
         },
         {
