@@ -35,7 +35,7 @@ resource "aws_ssm_parameter" "runningdinner-db-username-admin" {
 
 resource "aws_db_instance" "runningdinner-db" {
   identifier             = "runningdinner-db"
-  instance_class         = "db.t3.micro"
+  instance_class         = "db.t4g.micro"
   allocated_storage      = 10
   engine                 = "postgres"
   engine_version         = "17.4"
