@@ -40,9 +40,9 @@ resource "aws_ecs_task_definition" "runningdinner" {
   depends_on = [ aws_instance.runningdinner-appserver, aws_ssm_parameter.host-context-url ]
 
   # Uncomment this for not updating ECS service
-  # lifecycle {
-  #   ignore_changes = [ container_definitions ]
-  # }
+  lifecycle {
+    ignore_changes = [ container_definitions ]
+  }
 }
 
 data "template_file" "runningdinner-app-task-definition-file" {
@@ -74,9 +74,9 @@ resource "aws_ecs_service" "runningdinner-ecs-service" {
   }
 
   # Uncomment this for don't updating ECS service
-  # lifecycle {
-  #   ignore_changes = [ task_definition ]
-  # }
+  lifecycle {
+    ignore_changes = [ task_definition ]
+  }
 
   tags = local.common_tags
 }
@@ -88,8 +88,7 @@ resource "aws_cloudwatch_log_group" "runningdinner-ecs-log-group" {
 }
 
 # ---------------------------------------------------------------------------
-# CloudWatch Logs Insights – saved queries for ECS structured JSON logs
-# (logstash-logback-encoder JSON format: level, logger_name, stack_trace, …)
+# CloudWatch Logs Insights – saved queries
 # ---------------------------------------------------------------------------
 
 resource "aws_cloudwatch_query_definition" "recent_logs" {
@@ -98,7 +97,7 @@ resource "aws_cloudwatch_query_definition" "recent_logs" {
   log_group_names = [aws_cloudwatch_log_group.runningdinner-ecs-log-group.name]
 
   query_string = <<-EOT
-    fields @timestamp, level, message, logger_name, adminId
+    fields @timestamp, @message
     | sort @timestamp desc, @ptr desc
     | limit 500
   EOT
@@ -110,8 +109,8 @@ resource "aws_cloudwatch_query_definition" "errors_and_warnings" {
   log_group_names = [aws_cloudwatch_log_group.runningdinner-ecs-log-group.name]
 
   query_string = <<-EOT
-    fields @timestamp, level, message, logger_name, adminId, stack_trace
-    | filter level in ["ERROR", "WARN"]
+    fields @timestamp, @message
+    | filter @message like /ERROR|WARN/
     | sort @timestamp desc, @ptr desc
     | limit 200
   EOT
@@ -123,8 +122,8 @@ resource "aws_cloudwatch_query_definition" "errors_only" {
   log_group_names = [aws_cloudwatch_log_group.runningdinner-ecs-log-group.name]
 
   query_string = <<-EOT
-    fields @timestamp, message, logger_name, adminId, stack_trace
-    | filter level = "ERROR"
+    fields @timestamp, @message
+    | filter @message like /ERROR/
     | sort @timestamp desc
     | limit 100
   EOT
