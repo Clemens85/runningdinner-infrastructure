@@ -8,6 +8,12 @@ provider "aws" {
 }
 
 terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "6.49.0"
+    }
+  }
   backend "s3" {
     key = "services/db-v2.tfstate"
   }

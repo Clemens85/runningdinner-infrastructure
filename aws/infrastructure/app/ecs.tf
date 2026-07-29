@@ -40,9 +40,9 @@ resource "aws_ecs_task_definition" "runningdinner" {
   depends_on = [ aws_instance.runningdinner-appserver, aws_ssm_parameter.host-context-url ]
 
   # Uncomment this for not updating ECS service
-#  lifecycle {
-#    ignore_changes = [ container_definitions ]
-#  }
+  # lifecycle {
+  #   ignore_changes = [ container_definitions ]
+  # }
 }
 
 data "template_file" "runningdinner-app-task-definition-file" {
@@ -74,9 +74,9 @@ resource "aws_ecs_service" "runningdinner-ecs-service" {
   }
 
   # Uncomment this for don't updating ECS service
-#  lifecycle {
-#    ignore_changes = [ task_definition ]
-#  }
+  # lifecycle {
+  #   ignore_changes = [ task_definition ]
+  # }
 
   tags = local.common_tags
 }
@@ -87,16 +87,45 @@ resource "aws_cloudwatch_log_group" "runningdinner-ecs-log-group" {
   retention_in_days = 7
 }
 
-resource "aws_cloudwatch_query_definition" "runningdinner-ecs-log-query" {
-  name = "runningdinner-backend desc"
+# ---------------------------------------------------------------------------
+# CloudWatch Logs Insights – saved queries for ECS structured JSON logs
+# (logstash-logback-encoder JSON format: level, logger_name, stack_trace, …)
+# ---------------------------------------------------------------------------
 
-  log_group_names = [
-    aws_cloudwatch_log_group.runningdinner-ecs-log-group.name
-  ]
+resource "aws_cloudwatch_query_definition" "recent_logs" {
+  name = "runningdinner-backend/${var.stage}/recent-logs"
 
-  query_string = <<EOF
-fields @timestamp, @message
-| sort @timestamp desc
-| limit 250
-EOF
+  log_group_names = [aws_cloudwatch_log_group.runningdinner-ecs-log-group.name]
+
+  query_string = <<-EOT
+    fields @timestamp, level, message, logger_name, adminId
+    | sort @timestamp desc, @ptr desc
+    | limit 500
+  EOT
+}
+
+resource "aws_cloudwatch_query_definition" "errors_and_warnings" {
+  name = "runningdinner-backend/${var.stage}/errors-and-warnings"
+
+  log_group_names = [aws_cloudwatch_log_group.runningdinner-ecs-log-group.name]
+
+  query_string = <<-EOT
+    fields @timestamp, level, message, logger_name, adminId, stack_trace
+    | filter level in ["ERROR", "WARN"]
+    | sort @timestamp desc, @ptr desc
+    | limit 200
+  EOT
+}
+
+resource "aws_cloudwatch_query_definition" "errors_only" {
+  name = "runningdinner-backend/${var.stage}/errors-only"
+
+  log_group_names = [aws_cloudwatch_log_group.runningdinner-ecs-log-group.name]
+
+  query_string = <<-EOT
+    fields @timestamp, message, logger_name, adminId, stack_trace
+    | filter level = "ERROR"
+    | sort @timestamp desc
+    | limit 100
+  EOT
 }
