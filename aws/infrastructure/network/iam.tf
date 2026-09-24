@@ -107,6 +107,13 @@ resource "aws_iam_role_policy" "app-instance-role-policy" {
                 "logs:DescribeLogStreams"
             ],
             "Resource": ["arn:aws:logs:*:*:*"]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "cloudwatch:PutMetricData"
+            ],
+            "Resource": ["*"]
         }
     ]
 }

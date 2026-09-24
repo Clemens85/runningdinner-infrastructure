@@ -27,6 +27,10 @@
       {
         "name": "LOGGING_PATH",
         "value": "/logs"
+      },
+      {
+        "name": "AWS_REGION",
+        "value": "${AWS_REGION}"
       }
     ],
     "secrets": [

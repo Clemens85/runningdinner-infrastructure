@@ -12,3 +12,5 @@ force_backend_deployment = false
 
 route_optimization_bucket_name = "route-optimization-prod"
 message_proposal_bucket_name = "message-proposal-prod"
+
+alert_email = "runyourdinner@gmail.com"

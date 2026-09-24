@@ -39,5 +39,9 @@ variable "domain_name" {
 
 variable "force_backend_deployment" {
   type = bool
-  default = false
+  default = true
+}
+
+variable "alert_email" {
+  type = string
 }
