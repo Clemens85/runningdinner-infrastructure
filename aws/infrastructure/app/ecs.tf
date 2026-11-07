@@ -40,9 +40,9 @@ resource "aws_ecs_task_definition" "runningdinner" {
   depends_on = [ aws_instance.runningdinner-appserver, aws_ssm_parameter.host-context-url ]
 
   # Uncomment this for not updating ECS service
-  lifecycle {
-    ignore_changes = [ container_definitions ]
-  }
+  # lifecycle {
+  #   ignore_changes = [ container_definitions ]
+  # }
 }
 
 data "template_file" "runningdinner-app-task-definition-file" {
@@ -74,9 +74,9 @@ resource "aws_ecs_service" "runningdinner-ecs-service" {
   }
 
   # Uncomment this for don't updating ECS service
-  lifecycle {
-    ignore_changes = [ task_definition ]
-  }
+  # lifecycle {
+  #   ignore_changes = [ task_definition ]
+  # }
 
   tags = local.common_tags
 }
